@@ -22,6 +22,24 @@ const PositiveFeedback = (props) => {
   const positiveFb = (props.goodFb / props.addedFb) * 100 || 0;
   return <p>positive {positiveFb}%</p>;
 };
+
+const Statistics = (props) => {
+  return (
+    <div>
+      <h1>statistics</h1>
+      <Counter name="good" count={props.good} />
+      <Counter name="neutral" count={props.neutral} />
+      <Counter name="bad" count={props.bad} />
+      <p>all {props.all}</p>
+      <AverageFeedback
+        addedFb={props.all}
+        goodFb={props.good}
+        badFb={props.bad}
+      />
+      <PositiveFeedback addedFb={props.all} goodFb={props.good} />
+    </div>
+  );
+};
 const App = () => {
   // save clicks of each button to its own state
   const [good, setGood] = useState(0);
@@ -56,13 +74,7 @@ const App = () => {
         name="bad"
         count={bad}
       />
-      <h1>statistics</h1>
-      <Counter name="good" count={good} />
-      <Counter name="neutral" count={neutral} />
-      <Counter name="bad" count={bad} />
-      <p>all {all}</p>
-      <AverageFeedback addedFb={all} goodFb={good} badFb={bad} />
-      <PositiveFeedback addedFb={all} goodFb={good} />
+      <Statistics good={good} neutral={neutral} bad={bad} all={all} />
     </div>
   );
 };
