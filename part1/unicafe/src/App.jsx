@@ -7,30 +7,33 @@ const Button = (props) => {
 const StatisticLine = (props) => {
   if (props.name == "avg") {
     const feedbackResult =
-      (props.goodFb * 1 + props.badFb * -1) / props.addedFb || 0;
-    return <p>average {feedbackResult}</p>;
+      Math.round(
+        ((props.goodFb * 1 + props.badFb * -1) / props.addedFb || 0) * 100
+      ) / 100;
+
+    return (
+      <tr>
+        <td>average </td>
+        <td>{feedbackResult}</td>
+      </tr>
+    );
   } else if (props.name == "pos") {
-    const positiveFb = (props.goodFb / props.addedFb) * 100 || 0;
-    return <p>positive {positiveFb}%</p>;
+    const positiveFb =
+      Math.round(((props.goodFb / props.addedFb) * 100 || 0) * 100) / 100;
+    return (
+      <tr>
+        <td>positive </td>
+        <td>{positiveFb}%</td>
+      </tr>
+    );
   }
   return (
-    <p>
-      {props.name} {props.count}
-    </p>
+    <tr>
+      <td>{props.name}</td>
+      <td>{props.count}</td>
+    </tr>
   );
 };
-
-// const AverageFeedback = (props) => {
-//   const feedbackResult =
-//     (props.goodFb * 1 + props.badFb * -1) / props.addedFb || 0;
-//   return <p>average {feedbackResult}</p>;
-// };
-
-// const PositiveFeedback = (props) => {
-//   const positiveFb = (props.goodFb / props.addedFb) * 100 || 0;
-//   return <p>positive {positiveFb}%</p>;
-// };
-
 const Statistics = (props) => {
   if (props.all < 1) {
     return <p>no feedback has been given</p>;
@@ -38,17 +41,21 @@ const Statistics = (props) => {
   return (
     <div>
       <h1>statistics</h1>
-      <StatisticLine name="good" count={props.good} />
-      <StatisticLine name="neutral" count={props.neutral} />
-      <StatisticLine name="bad" count={props.bad} />
-      <StatisticLine name="all" count={props.all} />
-      <StatisticLine
-        name="avg"
-        addedFb={props.all}
-        goodFb={props.good}
-        badFb={props.bad}
-      />
-      <StatisticLine name="pos" addedFb={props.all} goodFb={props.good} />
+      <table>
+        <tbody>
+          <StatisticLine name="good" count={props.good} />
+          <StatisticLine name="neutral" count={props.neutral} />
+          <StatisticLine name="bad" count={props.bad} />
+          <StatisticLine name="all" count={props.all} />
+          <StatisticLine
+            name="avg"
+            addedFb={props.all}
+            goodFb={props.good}
+            badFb={props.bad}
+          />
+          <StatisticLine name="pos" addedFb={props.all} goodFb={props.good} f />
+        </tbody>
+      </table>
     </div>
   );
 };
