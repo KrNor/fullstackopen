@@ -24,6 +24,9 @@ const PositiveFeedback = (props) => {
 };
 
 const Statistics = (props) => {
+  if (props.all < 1) {
+    return <p>no feedback has been given</p>;
+  }
   return (
     <div>
       <h1>statistics</h1>
