@@ -4,7 +4,15 @@ const Button = (props) => {
   return <button onClick={props.onClick}>{props.name}</button>;
 };
 
-const Counter = (props) => {
+const StatisticLine = (props) => {
+  if (props.name == "avg") {
+    const feedbackResult =
+      (props.goodFb * 1 + props.badFb * -1) / props.addedFb || 0;
+    return <p>average {feedbackResult}</p>;
+  } else if (props.name == "pos") {
+    const positiveFb = (props.goodFb / props.addedFb) * 100 || 0;
+    return <p>positive {positiveFb}%</p>;
+  }
   return (
     <p>
       {props.name} {props.count}
@@ -12,16 +20,16 @@ const Counter = (props) => {
   );
 };
 
-const AverageFeedback = (props) => {
-  const feedbackResult =
-    (props.goodFb * 1 + props.badFb * -1) / props.addedFb || 0;
-  return <p>average {feedbackResult}</p>;
-};
+// const AverageFeedback = (props) => {
+//   const feedbackResult =
+//     (props.goodFb * 1 + props.badFb * -1) / props.addedFb || 0;
+//   return <p>average {feedbackResult}</p>;
+// };
 
-const PositiveFeedback = (props) => {
-  const positiveFb = (props.goodFb / props.addedFb) * 100 || 0;
-  return <p>positive {positiveFb}%</p>;
-};
+// const PositiveFeedback = (props) => {
+//   const positiveFb = (props.goodFb / props.addedFb) * 100 || 0;
+//   return <p>positive {positiveFb}%</p>;
+// };
 
 const Statistics = (props) => {
   if (props.all < 1) {
@@ -30,16 +38,17 @@ const Statistics = (props) => {
   return (
     <div>
       <h1>statistics</h1>
-      <Counter name="good" count={props.good} />
-      <Counter name="neutral" count={props.neutral} />
-      <Counter name="bad" count={props.bad} />
-      <p>all {props.all}</p>
-      <AverageFeedback
+      <StatisticLine name="good" count={props.good} />
+      <StatisticLine name="neutral" count={props.neutral} />
+      <StatisticLine name="bad" count={props.bad} />
+      <StatisticLine name="all" count={props.all} />
+      <StatisticLine
+        name="avg"
         addedFb={props.all}
         goodFb={props.good}
         badFb={props.bad}
       />
-      <PositiveFeedback addedFb={props.all} goodFb={props.good} />
+      <StatisticLine name="pos" addedFb={props.all} goodFb={props.good} />
     </div>
   );
 };
@@ -49,13 +58,9 @@ const App = () => {
   const [neutral, setNeutral] = useState(0);
   const [bad, setBad] = useState(0);
   const [all, setAll] = useState(0);
-  // AddedFeedback
-  // AverageFeedback
-  // % of positive feedback
   return (
     <div>
       <h1>give feedback</h1>
-
       <Button
         onClick={() => {
           setGood(good + 1), setAll(all + 1);
