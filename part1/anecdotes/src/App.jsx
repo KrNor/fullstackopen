@@ -1,8 +1,5 @@
 import { useState } from "react";
 
-const Button = (param) => {
-  return <button>next anecdote</button>;
-};
 const App = () => {
   const anecdotes = [
     "If it hurts, do it more often.",
@@ -14,19 +11,29 @@ const App = () => {
     "Programming without an extremely heavy use of console.log is same as if a doctor would refuse to use x-rays or blood tests when diagnosing patients.",
     "The only way to go fast, is to go well.",
   ];
-
-  const [selected, setSelected] = useState(0);
   const jokeAmmount = anecdotes.length;
-  const HandleClick = () => {
-    const currJoke = Math.floor(Math.random() * jokeAmmount);
+  const [selected, setSelected] = useState(0);
+  const [voteArray, setVoteArray] = useState(new Uint8Array(jokeAmmount));
+  const HandleNextClick = () => {
+    var currJoke = Math.floor(Math.random() * jokeAmmount);
     setSelected(currJoke);
     console.log(currJoke);
     return currJoke;
   };
+  const HandleJokeClick = () => {
+    var tempArr = { ...voteArray };
+    console.log(tempArr);
+    tempArr[selected] += 1;
+    setVoteArray(tempArr);
+    console.log(tempArr);
+    return tempArr[selected];
+  };
   return (
     <div>
       <p>{anecdotes[selected]}</p>
-      <button onClick={() => HandleClick(jokeAmmount)}>next anecdote</button>
+      <p>has {voteArray[selected]} votes</p>
+      <button onClick={() => HandleNextClick()}>next anecdote</button>
+      <button onClick={() => HandleJokeClick()}>vote</button>
     </div>
   );
 };
