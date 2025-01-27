@@ -11,29 +11,31 @@ const App = () => {
     "Programming without an extremely heavy use of console.log is same as if a doctor would refuse to use x-rays or blood tests when diagnosing patients.",
     "The only way to go fast, is to go well.",
   ];
-  const jokeAmmount = anecdotes.length;
   const [selected, setSelected] = useState(0);
-  const [voteArray, setVoteArray] = useState(new Uint8Array(jokeAmmount));
+  const [voteArray, setVoteArray] = useState(new Uint8Array(anecdotes.length));
+  const [maxVoteJoke, setMaxVoteJoke] = useState(0);
   const HandleNextClick = () => {
-    var currJoke = Math.floor(Math.random() * jokeAmmount);
+    var currJoke = Math.floor(Math.random() * anecdotes.length);
     setSelected(currJoke);
-    console.log(currJoke);
-    return currJoke;
   };
   const HandleJokeClick = () => {
     var tempArr = { ...voteArray };
-    console.log(tempArr);
     tempArr[selected] += 1;
     setVoteArray(tempArr);
-    console.log(tempArr);
-    return tempArr[selected];
+    if (voteArray[maxVoteJoke] < tempArr[selected]) {
+      setMaxVoteJoke(selected);
+    }
   };
   return (
     <div>
+      <h1>Anecdote of the day</h1>
       <p>{anecdotes[selected]}</p>
       <p>has {voteArray[selected]} votes</p>
       <button onClick={() => HandleNextClick()}>next anecdote</button>
       <button onClick={() => HandleJokeClick()}>vote</button>
+      <h1>Anecdote with most votes</h1>
+      <p>{anecdotes[maxVoteJoke]}</p>
+      <p>has {voteArray[maxVoteJoke]}</p>
     </div>
   );
 };
