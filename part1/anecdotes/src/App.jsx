@@ -35,7 +35,7 @@ const App = () => {
       <button onClick={() => HandleJokeClick()}>vote</button>
       <h1>Anecdote with most votes</h1>
       <p>{anecdotes[maxVoteJoke]}</p>
-      <p>has {voteArray[maxVoteJoke]}</p>
+      <p>has {voteArray[maxVoteJoke]} votes</p>
     </div>
   );
 };
