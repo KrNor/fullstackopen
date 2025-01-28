@@ -12,9 +12,13 @@ const App = () => {
   const addName = (event) => {
     event.preventDefault();
     console.log(persons);
-    setPersons(persons.concat({ name: newName }));
-    console.log("form is submitted");
-    console.log(persons.concat({ name: newName }));
+    if (persons.map((person) => person.name).includes(newName)) {
+      window.alert(`the name: "${newName}" is already in the phonebook!`);
+    } else {
+      setPersons(persons.concat({ name: newName }));
+      console.log("form is submitted");
+      console.log(persons.concat({ name: newName }));
+    }
   };
 
   return (
