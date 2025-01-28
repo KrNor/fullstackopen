@@ -24,23 +24,22 @@ const Part = (props) => {
   );
 };
 
-// const Total = (props) => {
-//   var totalExercises = 0;
-//   return (
-//     <p>
-//       Number of exercises{" "}
-//       {props.parts[0].exercises +
-//         props.parts[1].exercises +
-//         props.parts[2].exercises}
-//     </p>
-//   );
-// };
+const Total = (props) => {
+  var totalExercises = 0;
+  return (
+    <b>
+      total of{" "}
+      {props.parts.map((partt) => partt.exercises).reduce((a, b) => a + b, 0)}{" "}
+      exercises
+    </b>
+  );
+};
 const Course = (props) => {
   return (
     <div>
       <Header course={props.course.name} />
       <Content parts={props.course.parts} />
-      {/* <Total parts={props.course.parts} /> */}
+      <Total parts={props.course.parts} />
     </div>
   );
 };
@@ -66,8 +65,8 @@ const App = () => {
         id: 3,
       },
       {
-        name: "procastination",
-        exercises: 1,
+        name: "procrastination",
+        exercises: 20,
         id: 4,
       },
     ],
