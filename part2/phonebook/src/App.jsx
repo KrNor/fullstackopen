@@ -1,27 +1,50 @@
 import { useState } from "react";
 
-// const ContactList = (props) => {
-//   if (props.newSearch.length < 1) {
-//     console.log(props.newSearch.length);
-//     props.persons.map((personn) => {
-//       return (
-//         <p key={personn.name}>
-//           {personn.name} {personn.number}
-//         </p>
-//       );
-//     });
-//   }
-//   return (
-//     //   {props.persons.map((person) => {
-//     // if (person.name.includes(newSearch)) {
-//     //   <p key={person.name}>
-//     //     {person.name} {person.number}
-//     //   </p>;
-//     // }
-//     // })}
-//     <div>temp</div>
-//   );
-// };
+const PhoneBook = (props) => {
+  return (
+    <div>
+      Find(filter) name: <input value={props.value} onChange={props.onChange} />
+    </div>
+  );
+};
+const PersonForm = (props) => {
+  return (
+    <form onSubmit={props.onSubmit}>
+      <div>
+        name:
+        <input value={props.nameValue} onChange={props.onNameChange} />
+      </div>
+      <div>
+        number:
+        <input value={props.numberValue} onChange={props.onNumberChange} />
+      </div>
+      <div>
+        <button type="submit">add</button>
+      </div>
+    </form>
+  );
+};
+
+const Numbers = (props) => {
+  if (props.listToShow.length < 1) {
+    return <div>there are no contacts that fit the search criteria</div>;
+  }
+  return (
+    <div>
+      {props.listToShow.map((person) => (
+        <Number key={person.id} numb={person} />
+      ))}
+    </div>
+  );
+};
+
+const Number = (props) => {
+  return (
+    <p>
+      {props.numb.name} {props.numb.number}
+    </p>
+  );
+};
 
 const App = () => {
   const [persons, setPersons] = useState([
@@ -33,31 +56,38 @@ const App = () => {
   const [newName, setNewName] = useState("");
   const [newNumber, setnewNumber] = useState("");
   const [newSearch, setNewSearch] = useState("");
-
+  const [currId, setCurrId] = useState(persons[persons.length - 1].id);
   const changeName = (event) => {
     event.preventDefault();
     setNewName(event.target.value);
-    console.log(event.target.value);
   };
   const changeNumber = (event) => {
     event.preventDefault();
     setnewNumber(event.target.value);
-    console.log(event.target.value);
   };
   const changeSearch = (event) => {
     event.preventDefault();
     setNewSearch(event.target.value);
-    console.log(event.target.value);
   };
   const addContact = (event) => {
     event.preventDefault();
-    console.log(persons);
-    if (persons.map((person) => person.name).includes(newName)) {
-      window.alert(`the name: "${newName}" is already in the phonebook!`);
+    if (
+      persons.map((person) => person.name).includes(newName) ||
+      newName.length < 1
+    ) {
+      window.alert(`the name: "${newName}" is invalid!`);
     } else {
-      setPersons(persons.concat({ name: newName, number: newNumber }));
-      console.log("form is submitted");
-      console.log(persons.concat({ name: newName, number: newNumber }));
+      var newId = currId + 1;
+      setPersons(
+        persons.concat({ name: newName, number: newNumber, id: newId })
+      );
+      setCurrId(newId);
+      // console.log("form is submitted");
+      // console.log(
+      //   persons.concat({ name: newName, number: newNumber, id: newId })
+      // );
+      setNewName("");
+      setnewNumber("");
     }
   };
   const personsToShow =
@@ -70,29 +100,18 @@ const App = () => {
   return (
     <div>
       <h2>Phonebook</h2>
-      <div>
-        Find(filter) name: <input value={newSearch} onChange={changeSearch} />
-      </div>
+      <PhoneBook value={newSearch} onChange={changeSearch} />
       <h2>Add a new Contact</h2>
-      <form onSubmit={addContact}>
-        <div>
-          name: <input value={newName} onChange={changeName} />
-        </div>
-        <div>
-          number: <input value={newNumber} onChange={changeNumber} />
-        </div>
-        <div>
-          <button type="submit">add</button>
-        </div>
-      </form>
+      <PersonForm
+        onSubmit={addContact}
+        nameValue={newName}
+        onNameChange={changeName}
+        numberValue={newNumber}
+        onNumberChange={changeNumber}
+        currentId={currId}
+      />
       <h2>Numbers</h2>
-      <div>
-        {personsToShow.map((person) => (
-          <p key={person.name}>
-            {person.name} {person.number}
-          </p>
-        ))}
-      </div>
+      <Numbers listToShow={personsToShow} />
     </div>
   );
 };
