@@ -98,11 +98,38 @@ const App = () => {
   };
   const addContact = (event) => {
     event.preventDefault();
-    if (
-      persons.map((person) => person.name).includes(newName) ||
-      newName.length < 1
-    ) {
+
+    const personsMap = persons.map((person) => person.name);
+    if (newName.length < 1) {
       window.alert(`the name: "${newName}" is invalid!`);
+    } else if (personsMap.includes(newName)) {
+      if (
+        window.confirm(
+          `the contact ${newName} already exists, do you want to update it ?`
+        )
+      ) {
+        const idWeWant = persons.find((val) => val.name === newName).id;
+        if (!(idWeWant === "0")) {
+          const contactObject = {
+            name: newName,
+            number: newNumber,
+          };
+          console.log(event);
+          console.log(idWeWant);
+          contactsService
+            .updateContact(idWeWant, contactObject)
+            .then((pres) => {
+              console.log(pres);
+              contactsService.getAll().then((response) => {
+                console.log("after the update the list is refreshed");
+                setPersons(response.data);
+              });
+            })
+            .catch((error) => console.log("something went wrong"));
+        }
+      } else {
+        console.log(`the contact ${newName} was not updated`);
+      }
     } else {
       const contactObject = {
         name: newName,
