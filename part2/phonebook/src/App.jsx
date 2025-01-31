@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import axios from "axios";
+import contactsService from "./services/contacts";
 
 const PhoneBook = (props) => {
   return (
@@ -55,7 +55,7 @@ const App = () => {
 
   const hook = () => {
     console.log("effect");
-    axios.get("http://localhost:3001/persons").then((response) => {
+    contactsService.getAll().then((response) => {
       console.log("promise fulfilled");
       setPersons(response.data);
     });
@@ -87,8 +87,8 @@ const App = () => {
         name: newName,
         number: newNumber,
       };
-      axios
-        .post("http://localhost:3001/persons", contactObject)
+      contactsService
+        .create(contactObject)
         .then((response) => {
           setPersons(persons.concat(response.data));
           console.log("form is submitted");
@@ -100,7 +100,7 @@ const App = () => {
             console.log(
               "there was a mistake with the submission, please try again"
             )
-          // this doesn't work how I want for now but i'll keep it for now
+          // this doesn't work how I want for now but i'll keep it for now (or maybie it does )
         );
     }
   };
