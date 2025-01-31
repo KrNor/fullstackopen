@@ -83,16 +83,25 @@ const App = () => {
       window.alert(`the name: "${newName}" is invalid!`);
     } else {
       var newId = currId + 1;
-      setPersons(
-        persons.concat({ name: newName, number: newNumber, id: newId })
-      );
-      setCurrId(newId);
-      // console.log("form is submitted");
-      // console.log(
-      //   persons.concat({ name: newName, number: newNumber, id: newId })
-      // );
-      setNewName("");
-      setnewNumber("");
+      const contactObject = {
+        name: newName,
+        number: newNumber,
+      };
+      axios
+        .post("http://localhost:3001/persons", contactObject)
+        .then((response) => {
+          setPersons(persons.concat(response.data));
+          console.log("form is submitted");
+          setNewName("");
+          setnewNumber("");
+        })
+        .catch(
+          (error) =>
+            console.log(
+              "there was a mistake with the submission, please try again"
+            )
+          // this doesn't work how I want for now but i'll keep it for now
+        );
     }
   };
   const personsToShow =
