@@ -33,7 +33,7 @@ const Numbers = (props) => {
   return (
     <div>
       {props.listToShow.map((person) => (
-        <Number key={person.id} numb={person} />
+        <Number key={person.id} numb={person} delFunc={props.delFunc} />
       ))}
     </div>
   );
@@ -43,6 +43,9 @@ const Number = (props) => {
   return (
     <p>
       {props.numb.name} {props.numb.number}
+      <button type="button" onClick={() => props.delFunc(props.numb.id)}>
+        delete contact
+      </button>
     </p>
   );
 };
@@ -54,14 +57,13 @@ const App = () => {
   const [newSearch, setNewSearch] = useState("");
 
   const hook = () => {
-    console.log("effect");
+    // console.log("effect");
     contactsService.getAll().then((response) => {
-      console.log("promise fulfilled");
+      // console.log("promise fulfilled");
       setPersons(response.data);
     });
   };
   useEffect(hook, []);
-  const [currId, setCurrId] = useState(4); //persons[persons.length - 1].id;
   const changeName = (event) => {
     event.preventDefault();
     setNewName(event.target.value);
@@ -74,6 +76,26 @@ const App = () => {
     event.preventDefault();
     setNewSearch(event.target.value);
   };
+  const delContact = (event) => {
+    // console.log("delContactevent");
+    // console.log(event);
+    if (
+      window.confirm(
+        `are you sure you want to delete the number with id"${event}"?`
+      )
+    ) {
+      contactsService
+        .deleteContact(event)
+        .then((pres) => {
+          // console.log(pres);
+          contactsService.getAll().then((response) => {
+            // console.log("after the deletion the list is refreshed");
+            setPersons(response.data);
+          });
+        })
+        .catch((error) => console.log("something went wrong"));
+    }
+  };
   const addContact = (event) => {
     event.preventDefault();
     if (
@@ -82,7 +104,6 @@ const App = () => {
     ) {
       window.alert(`the name: "${newName}" is invalid!`);
     } else {
-      var newId = currId + 1;
       const contactObject = {
         name: newName,
         number: newNumber,
@@ -91,16 +112,14 @@ const App = () => {
         .create(contactObject)
         .then((response) => {
           setPersons(persons.concat(response.data));
-          console.log("form is submitted");
+          // console.log("form is submitted");
           setNewName("");
           setnewNumber("");
         })
-        .catch(
-          (error) =>
-            console.log(
-              "there was a mistake with the submission, please try again"
-            )
-          // this doesn't work how I want for now but i'll keep it for now (or maybie it does )
+        .catch((error) =>
+          console.log(
+            "there was a mistake with the submission, please try again"
+          )
         );
     }
   };
@@ -122,10 +141,9 @@ const App = () => {
         onNameChange={changeName}
         numberValue={newNumber}
         onNumberChange={changeNumber}
-        currentId={currId}
       />
       <h2>Numbers</h2>
-      <Numbers listToShow={personsToShow} />
+      <Numbers listToShow={personsToShow} delFunc={delContact} />
     </div>
   );
 };
