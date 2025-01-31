@@ -1,54 +1,9 @@
 import { useState, useEffect } from "react";
 import contactsService from "./services/contacts";
 
-const PhoneBook = (props) => {
-  return (
-    <div>
-      Find(filter) name: <input value={props.value} onChange={props.onChange} />
-    </div>
-  );
-};
-const PersonForm = (props) => {
-  return (
-    <form onSubmit={props.onSubmit}>
-      <div>
-        name:
-        <input value={props.nameValue} onChange={props.onNameChange} />
-      </div>
-      <div>
-        number:
-        <input value={props.numberValue} onChange={props.onNumberChange} />
-      </div>
-      <div>
-        <button type="submit">add</button>
-      </div>
-    </form>
-  );
-};
-
-const Numbers = (props) => {
-  if (props.listToShow.length < 1) {
-    return <div>there are no contacts that fit the search criteria</div>;
-  }
-  return (
-    <div>
-      {props.listToShow.map((person) => (
-        <Number key={person.id} numb={person} delFunc={props.delFunc} />
-      ))}
-    </div>
-  );
-};
-
-const Number = (props) => {
-  return (
-    <p>
-      {props.numb.name} {props.numb.number}
-      <button type="button" onClick={() => props.delFunc(props.numb.id)}>
-        delete contact
-      </button>
-    </p>
-  );
-};
+import Numbers from "./components/Numbers";
+import PersonForm from "./components/PersonForm";
+import PhoneBook from "./components/PhoneBook";
 
 const App = () => {
   const [persons, setPersons] = useState([]);
@@ -56,40 +11,32 @@ const App = () => {
   const [newNumber, setnewNumber] = useState("");
   const [newSearch, setNewSearch] = useState("");
 
-  const hook = () => {
-    // console.log("effect");
+  useEffect(() => {
     contactsService.getAll().then((response) => {
-      // console.log("promise fulfilled");
       setPersons(response.data);
     });
-  };
-  useEffect(hook, []);
+  }, []);
   const changeName = (event) => {
-    event.preventDefault();
     setNewName(event.target.value);
   };
   const changeNumber = (event) => {
-    event.preventDefault();
     setnewNumber(event.target.value);
   };
   const changeSearch = (event) => {
-    event.preventDefault();
     setNewSearch(event.target.value);
   };
   const delContact = (event) => {
-    // console.log("delContactevent");
-    // console.log(event);
     if (
       window.confirm(
-        `are you sure you want to delete the number with id"${event}"?`
+        `are you sure you want to delete the contact "${
+          persons.find((val) => val.id === event).name
+        }"?`
       )
     ) {
       contactsService
         .deleteContact(event)
         .then((pres) => {
-          // console.log(pres);
           contactsService.getAll().then((response) => {
-            // console.log("after the deletion the list is refreshed");
             setPersons(response.data);
           });
         })
@@ -99,34 +46,31 @@ const App = () => {
   const addContact = (event) => {
     event.preventDefault();
 
-    const personsMap = persons.map((person) => person.name);
     if (newName.length < 1) {
       window.alert(`the name: "${newName}" is invalid!`);
-    } else if (personsMap.includes(newName)) {
+    } else if (persons.map((person) => person.name).includes(newName)) {
       if (
         window.confirm(
           `the contact ${newName} already exists, do you want to update it ?`
         )
       ) {
-        const idWeWant = persons.find((val) => val.name === newName).id;
-        if (!(idWeWant === "0")) {
-          const contactObject = {
-            name: newName,
-            number: newNumber,
-          };
-          console.log(event);
-          console.log(idWeWant);
-          contactsService
-            .updateContact(idWeWant, contactObject)
-            .then((pres) => {
-              console.log(pres);
-              contactsService.getAll().then((response) => {
-                console.log("after the update the list is refreshed");
-                setPersons(response.data);
-              });
-            })
-            .catch((error) => console.log("something went wrong"));
-        }
+        const contactObject = {
+          name: newName,
+          number: newNumber,
+        };
+        contactsService
+          .updateContact(
+            persons.find((val) => val.name === newName).id,
+            contactObject
+          )
+          .then(() => {
+            contactsService.getAll().then((response) => {
+              setPersons(response.data);
+              setNewName("");
+              setnewNumber("");
+            });
+          })
+          .catch((error) => console.log("something went wrong"));
       } else {
         console.log(`the contact ${newName} was not updated`);
       }
@@ -139,7 +83,6 @@ const App = () => {
         .create(contactObject)
         .then((response) => {
           setPersons(persons.concat(response.data));
-          // console.log("form is submitted");
           setNewName("");
           setnewNumber("");
         })
