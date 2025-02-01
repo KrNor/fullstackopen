@@ -5,12 +5,15 @@ import Numbers from "./components/Numbers";
 import PersonForm from "./components/PersonForm";
 import PhoneBook from "./components/PhoneBook";
 
-const Notification = ({ message }) => {
+const Notification = ({ message, isErr }) => {
   if (message === null) {
     return null;
   }
+  if (isErr) {
+    return <div className="error">{message}</div>;
+  }
 
-  return <div className="error">{message}</div>;
+  return <div className="success">{message}</div>;
 };
 
 const App = () => {
@@ -19,6 +22,7 @@ const App = () => {
   const [newNumber, setnewNumber] = useState("");
   const [newSearch, setNewSearch] = useState("");
   const [errorMessage, setErrorMessage] = useState(null);
+  const [isError, setNewisError] = useState(true);
 
   useEffect(() => {
     contactsService.getAll().then((response) => {
@@ -49,7 +53,15 @@ const App = () => {
             setPersons(response.data);
           });
         })
-        .catch((error) => console.log("something went wrong"));
+        .catch((error) => {
+          setNewisError(true);
+          setErrorMessage(
+            `the contact you wanted to delete is already deleted !`
+          );
+          setTimeout(() => {
+            setErrorMessage(null);
+          }, 20000);
+        });
     }
   };
   const addContact = (event) => {
@@ -57,6 +69,13 @@ const App = () => {
 
     if (newName.length < 1) {
       window.alert(`the name: "${newName}" is invalid!`);
+      {
+        setNewisError(true);
+        setErrorMessage(`to create a contact please write in a valid name`);
+        setTimeout(() => {
+          setErrorMessage(null);
+        }, 20000);
+      }
     } else if (persons.map((person) => person.name).includes(newName)) {
       if (
         window.confirm(
@@ -75,6 +94,7 @@ const App = () => {
           .then(() => {
             contactsService.getAll().then((response) => {
               setPersons(response.data);
+              setNewisError(false);
               setNewName("");
               setnewNumber("");
               setErrorMessage(`the contact ${newName} was updated !`);
@@ -83,7 +103,13 @@ const App = () => {
               }, 2000);
             });
           })
-          .catch((error) => console.log("something went wrong"));
+          .catch((error) => {
+            setNewisError(true);
+            setErrorMessage(`there was a problem with updating the contact !`);
+            setTimeout(() => {
+              setErrorMessage(null);
+            }, 20000);
+          });
       } else {
         console.log(`the contact ${newName} was not updated`);
       }
@@ -96,6 +122,7 @@ const App = () => {
         .create(contactObject)
         .then((response) => {
           setPersons(persons.concat(response.data));
+          setNewisError(false);
           setNewName("");
           setnewNumber("");
           setErrorMessage(`the contact ${newName} was created !`);
@@ -103,11 +130,13 @@ const App = () => {
             setErrorMessage(null);
           }, 2000);
         })
-        .catch((error) =>
-          console.log(
-            "there was a mistake with the submission, please try again"
-          )
-        );
+        .catch((error) => {
+          setNewisError(true);
+          setErrorMessage(`there was a problem with updating the contact !`);
+          setTimeout(() => {
+            setErrorMessage(null);
+          }, 20000);
+        });
     }
   };
   const personsToShow =
@@ -120,7 +149,7 @@ const App = () => {
   return (
     <div>
       <h2>Phonebook</h2>
-      <Notification message={errorMessage} />
+      <Notification message={errorMessage} isErr={isError} />
       <PhoneBook value={newSearch} onChange={changeSearch} />
       <h2>Add a new Contact</h2>
       <PersonForm
