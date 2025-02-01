@@ -5,11 +5,20 @@ import Numbers from "./components/Numbers";
 import PersonForm from "./components/PersonForm";
 import PhoneBook from "./components/PhoneBook";
 
+const Notification = ({ message }) => {
+  if (message === null) {
+    return null;
+  }
+
+  return <div className="error">{message}</div>;
+};
+
 const App = () => {
   const [persons, setPersons] = useState([]);
   const [newName, setNewName] = useState("");
   const [newNumber, setnewNumber] = useState("");
   const [newSearch, setNewSearch] = useState("");
+  const [errorMessage, setErrorMessage] = useState(null);
 
   useEffect(() => {
     contactsService.getAll().then((response) => {
@@ -68,6 +77,10 @@ const App = () => {
               setPersons(response.data);
               setNewName("");
               setnewNumber("");
+              setErrorMessage(`the contact ${newName} was updated !`);
+              setTimeout(() => {
+                setErrorMessage(null);
+              }, 2000);
             });
           })
           .catch((error) => console.log("something went wrong"));
@@ -85,6 +98,10 @@ const App = () => {
           setPersons(persons.concat(response.data));
           setNewName("");
           setnewNumber("");
+          setErrorMessage(`the contact ${newName} was created !`);
+          setTimeout(() => {
+            setErrorMessage(null);
+          }, 2000);
         })
         .catch((error) =>
           console.log(
@@ -103,6 +120,7 @@ const App = () => {
   return (
     <div>
       <h2>Phonebook</h2>
+      <Notification message={errorMessage} />
       <PhoneBook value={newSearch} onChange={changeSearch} />
       <h2>Add a new Contact</h2>
       <PersonForm
