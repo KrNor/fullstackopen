@@ -2,33 +2,32 @@ import { useState, useEffect } from "react";
 import CountriyServices from "./services/countries";
 
 const SingleCountry = (props) => {
-  const HandleClickShow = () => {
-    console.log(`${props.ctrName}`);
-    console.log("was clicked");
-    props.setSearchQerr(`${props.ctrName}`);
-  };
   return (
     <div>
       <p>
-        {props.ctrName} <button onClick={() => HandleClickShow()}>show</button>
+        {props.countryObject.name.common}{" "}
+        <button
+          onClick={() => {
+            props.setSearchQerr(props.countryObject.name.common);
+            props.setSelectedCountries([props.countryObject]);
+          }}
+        >
+          show
+        </button>
       </p>
     </div>
   );
 };
 
 const SingleCountryDetailed = (props) => {
-  const flagFontH1Size = {
-    margin: 0,
-    fontSize: 200,
-  }; // this putting and emoji into a h1 and resizing it works somehow
   return (
     <div>
-      <h2>{props.ctrName}</h2>
-      <p>the capital is: {props.ctrinfo.capital}</p>
-      <p>the population is: {props.ctrinfo.population}</p>
+      <h2>{props.countryObject.name.common}</h2>
+      <p>the capital is: {props.countryObject.capital}</p>
+      <p>the population is: {props.countryObject.population}</p>
       <div>
         the languages are:
-        {Object.values(props.ctrinfo.languages).map((lang) => {
+        {Object.values(props.countryObject.languages).map((lang) => {
           return (
             <p key={lang}>
               <b>{lang}</b>
@@ -36,64 +35,39 @@ const SingleCountryDetailed = (props) => {
           );
         })}
       </div>
-      <p>the flag of {props.ctrName} is:</p>
-      <h1 style={flagFontH1Size}>{props.ctrinfo.flag}</h1>
+      <p>the flag of {props.countryObject.name.common} is:</p>
+      <h1 className="h1offlag">{props.countryObject.flag}</h1>
     </div>
   );
 };
 
 const MultipleCountries = (props) => {
-  var temps = props.countries
-    .filter((res) =>
-      res.name.common.toLowerCase().includes(props.search.toLowerCase())
-    )
-    .map((ress) => ress.name.common);
-  if (temps.length === 0) {
+  if (props.selectCountries.length === 0) {
     return <p>no countries match your criteria</p>;
-  } else if (temps.length === 1) {
+  } else if (props.selectCountries.length === 1) {
     return (
       <SingleCountryDetailed
-        key={temps[0]}
-        ctrName={temps[0]}
-        ctrinfo={
-          props.countries.filter((res) =>
-            res.name.common.toLowerCase().includes(props.search.toLowerCase())
-          )[0]
-        }
+        key={props.selectCountries[0].name.common}
+        countryObject={props.selectCountries[0]}
       />
     );
-  } else if (temps.length > 11) {
-    console.log(temps.length);
+  } else if (props.selectCountries.length > 10) {
     return <p>the current list is too long to show</p>;
   } else {
     return (
       <div>
-        {temps.map((countryie) => (
+        {props.selectCountries.map((countryie) => (
           <SingleCountry
-            key={countryie}
-            ctrName={countryie}
+            key={countryie.name.common}
+            countryObject={countryie}
             setSearchQerr={props.setSearchQerr}
+            setSelectedCountries={props.setSelectedCountries}
           />
         ))}
       </div>
     );
   }
-  console.log(temps.length);
 };
-
-//   return (
-//     <div>
-//       {props.countries.map((res) => {
-//         if (
-//           res.name.common.toLowerCase().includes(props.search.toLowerCase())
-//         ) {
-//           return <p key={res.name.common}>{res.name.common}</p>;
-//         }
-//       })}
-//     </div>
-//   );
-// };
-
 const SearchField = (props) => {
   return (
     <p>
@@ -106,7 +80,7 @@ const SearchField = (props) => {
 function App() {
   const [searchQer, setSearchQer] = useState("");
   const [countries, setCountries] = useState([]);
-  const [currCountries, setCurrCountries] = useState([]);
+  const [selectedCountries, setSelectedCountries] = useState([]);
 
   useEffect(() => {
     CountriyServices.getAll().then((response) => {
@@ -116,17 +90,19 @@ function App() {
 
   const onSearchChange = (event) => {
     setSearchQer(event.target.value);
+    setSelectedCountries(
+      countries.filter((res) =>
+        res.name.common.toLowerCase().includes(event.target.value.toLowerCase())
+      )
+    );
   };
-
   return (
     <div>
       <SearchField onChange={onSearchChange} value={searchQer} />
       <MultipleCountries
-        countries={countries}
-        search={searchQer}
-        setCurrCountries={() => setCurrCountries}
-        currCountries={currCountries}
+        selectCountries={selectedCountries}
         setSearchQerr={setSearchQer}
+        setSelectedCountries={setSelectedCountries}
       />
     </div>
   );
