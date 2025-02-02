@@ -2,7 +2,18 @@ import { useState, useEffect } from "react";
 import CountriyServices from "./services/countries";
 
 const SingleCountry = (props) => {
-  return <p>{props.ctrName}</p>;
+  const HandleClickShow = () => {
+    console.log(`${props.ctrName}`);
+    console.log("was clicked");
+    props.setSearchQerr(`${props.ctrName}`);
+  };
+  return (
+    <div>
+      <p>
+        {props.ctrName} <button onClick={() => HandleClickShow()}>show</button>
+      </p>
+    </div>
+  );
 };
 
 const SingleCountryDetailed = (props) => {
@@ -52,16 +63,22 @@ const MultipleCountries = (props) => {
       />
     );
   } else if (temps.length > 11) {
+    console.log(temps.length);
     return <p>the current list is too long to show</p>;
   } else {
     return (
       <div>
         {temps.map((countryie) => (
-          <SingleCountry key={countryie} ctrName={countryie} />
+          <SingleCountry
+            key={countryie}
+            ctrName={countryie}
+            setSearchQerr={props.setSearchQerr}
+          />
         ))}
       </div>
     );
   }
+  console.log(temps.length);
 };
 
 //   return (
@@ -109,6 +126,7 @@ function App() {
         search={searchQer}
         setCurrCountries={() => setCurrCountries}
         currCountries={currCountries}
+        setSearchQerr={setSearchQer}
       />
     </div>
   );
