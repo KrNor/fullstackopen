@@ -1,17 +1,25 @@
 import axios from "axios";
 const baseUrl = "https://studies.cs.helsinki.fi/restcountries/api";
+const weatherBaseUrl = "https://api.openweathermap.org/data/2.5/weather?q=";
+
+const weatherApiKey = import.meta.env.VITE_WEATHER_API;
 
 const getAll = () => {
   return axios.get(baseUrl + "/all");
 };
-const getSingle = () => {
-  return axios.get(baseUrl + "/name/finland");
-};
-const getAllSpecified = () => {
-  return axios.get(baseUrl + "/all").map((res) => console.log(res)); //res.name.common
+
+const getWeather = (cityName, countryCode) => {
+  const newString =
+    weatherBaseUrl +
+    cityName +
+    "," +
+    countryCode +
+    "&units=metric&appid=" +
+    weatherApiKey;
+  console.log("a call to api is made");
+  return axios.get(newString);
 };
 export default {
   getAll,
-  getSingle,
-  getAllSpecified,
+  getWeather,
 };

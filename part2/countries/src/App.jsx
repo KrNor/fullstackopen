@@ -18,6 +18,33 @@ const SingleCountry = (props) => {
     </div>
   );
 };
+const WeatherObject = (props) => {
+  const [weatherThing, setWeatherThing] = useState(null);
+
+  useEffect(() => {
+    CountriyServices.getWeather(
+      props.countryObject.capital[0],
+      props.countryObject.cca2
+    ).then((response) => {
+      setWeatherThing({
+        temperature: response.data.main.temp,
+        pictureid: `https://openweathermap.org/img/wn/${response.data.weather[0].icon}@2x.png`,
+        windspeed: response.data.wind.speed,
+      });
+    });
+  }, []);
+  if (weatherThing === null) {
+    return <p>the weather is loading please wait</p>;
+  } else {
+    return (
+      <div>
+        <p>the weather is: {weatherThing.temperature} degrees Celsius</p>
+        <img src={weatherThing.pictureid} />
+        <p>the wind speed is: {weatherThing.windspeed} m/s</p>
+      </div>
+    );
+  }
+};
 
 const SingleCountryDetailed = (props) => {
   return (
@@ -37,6 +64,7 @@ const SingleCountryDetailed = (props) => {
       </div>
       <p>the flag of {props.countryObject.name.common} is:</p>
       <h1 className="h1offlag">{props.countryObject.flag}</h1>
+      <WeatherObject countryObject={props.countryObject} />
     </div>
   );
 };
