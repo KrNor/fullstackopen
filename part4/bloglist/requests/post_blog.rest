@@ -5,5 +5,5 @@ Content-Type: application/json
     "title":"Alans big day",
     "author":"Alan",
     "url":"alanwebsite.asdasdasd",
-    "likes":6,
+    "likes":6
 }
