@@ -1,3 +1,5 @@
+const _ = require("lodash");
+
 const dummy = (blogs) => {
   return 1;
 };
@@ -30,8 +32,30 @@ const favoriteBlog = (blogs) => {
     likes: maxBlog.likes,
   };
 };
+
+const mostBlogs = (blogs) => {
+  if (blogs.length < 1) {
+    return {};
+  }
+  //   console.log(blogs);
+  let blogCount = _.countBy(blogs, _.iteratee("author"));
+  let aaaaaa = Object.entries(blogCount);
+  let asd = aaaaaa.reduce((prev, curr) => {
+    return prev && prev[1] > curr[1] ? prev : curr;
+  });
+  //   let biggestBlogger = _.maxBy(blogs, function (o) {
+  //     return o;
+  //   });
+  //   console.log(blogCount);
+  //   console.log(asd);
+  return {
+    author: asd[0],
+    blogs: asd[1],
+  };
+};
 module.exports = {
   dummy,
   totalLikes,
   favoriteBlog,
+  mostBlogs,
 };
