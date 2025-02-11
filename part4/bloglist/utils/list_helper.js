@@ -53,9 +53,31 @@ const mostBlogs = (blogs) => {
     blogs: asd[1],
   };
 };
+
+const mostLikes = (blogs) => {
+  if (blogs.length < 1) {
+    return {};
+  }
+  //   console.log(blogs);
+
+  let likesGrouped = _.groupBy(blogs, "author");
+  const likeCount = _.mapValues(likesGrouped, (like) => _.sumBy(like, "likes"));
+
+  let currAuth = { author: "", likes: 0 };
+
+  Object.entries(likeCount).forEach(([key, value]) => {
+    if (currAuth.likes <= value) {
+      currAuth = { author: key, likes: value };
+    }
+
+    // console.log(`${key} ${value}`);
+  });
+  return currAuth;
+};
 module.exports = {
   dummy,
   totalLikes,
   favoriteBlog,
   mostBlogs,
+  mostLikes,
 };

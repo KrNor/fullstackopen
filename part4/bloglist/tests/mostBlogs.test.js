@@ -8,18 +8,17 @@ describe("Author that has the most blogs, with count", () => {
     const result = listHelper.mostBlogs(listWithOneBlog);
     // console.log(result);
     assert.deepStrictEqual(result, { author: "Edsger W. Dijkstra", blogs: 1 });
-  });
-  test("when a list of blogs exists", () => {
-    const result = listHelper.mostBlogs(blogs);
-    // console.log(result);
-    assert.deepStrictEqual(result, {
-      author: "Robert C. Martin",
-      blogs: 3,
+  }),
+    test("when a list of blogs exists", () => {
+      const result = listHelper.mostBlogs(blogs);
+      // console.log(result);
+      assert.deepStrictEqual(result, {
+        author: "Robert C. Martin",
+        blogs: 3,
+      });
+    }),
+    test("When the list of blogs is empty", () => {
+      const result = listHelper.mostBlogs([]);
+      assert.deepStrictEqual(result, {});
     });
-  });
-
-  test("When the list of blogs is empty", () => {
-    const result = listHelper.mostBlogs([]);
-    assert.deepStrictEqual(result, {});
-  });
 });
