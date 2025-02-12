@@ -75,6 +75,26 @@ describe("Blog api tests", async () => {
     // console.log(response.body.likes);
     assert.deepStrictEqual(response.body.likes, 0);
   });
+  test("Blog creation test without title", async () => {
+    const newBlogg = {
+      author: "Kaprenicas Abralon",
+      url: "www.drthjpodrtyijhgnmdrxtiolnhduljbrtn.notexist.notcom",
+      likes: 10,
+    };
+    const asd = await api.post("/api/blogs").send(newBlogg).expect(400);
+    // console.log(asd.body);
+  });
+  test("Blog creation test without url", async () => {
+    const newBlogg = {
+      title: "The book of one of the books",
+      author: "Kaprenicas Abralon",
+      likes: 10,
+    };
+
+    const asd = await api.post("/api/blogs").send(newBlogg).expect(400);
+    // const asd = await api.post("/api/blogs").send(newBlogg).expect(201);
+    // console.log(asd.body);
+  });
 });
 
 after(async () => {
