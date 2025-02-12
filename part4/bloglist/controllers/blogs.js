@@ -21,7 +21,7 @@ BlogRouter.post("/", async (request, response) => {
     title: body.title,
     author: body.author,
     url: body.url,
-    likes: body.likes,
+    likes: body.likes || 0,
   });
   // console.log(blog);
   const ress = await blog.save();

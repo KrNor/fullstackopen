@@ -61,6 +61,20 @@ describe("Blog api tests", async () => {
     // console.log(contents);
     assert(contents.includes("The book of one of the books"));
   });
+  test("Blog creation test", async () => {
+    const newBlogg = {
+      title: "Not The book of one of the books",
+      author: "Kaprenicas Abralon",
+      url: "www.notdrthjpodrtyijhgnmdrxtiolnhduljbrtn.yesexist.notcom",
+    };
+    const response = await api
+      .post("/api/blogs")
+      .send(newBlogg)
+      .expect(201)
+      .expect("Content-Type", /application\/json/);
+    // console.log(response.body.likes);
+    assert.deepStrictEqual(response.body.likes, 0);
+  });
 });
 
 after(async () => {
