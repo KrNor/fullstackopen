@@ -28,6 +28,17 @@ describe("Blog api tests", async () => {
     // console.log(response.body.length);
     assert.deepStrictEqual(response.body.length, listOfBlogs.length);
   });
+  test("the object identifier is id  and not _id", async () => {
+    const response = await api
+      .get("/api/blogs")
+      .expect(200)
+      .expect("Content-Type", /application\/json/);
+
+    // console.log(response.body[0].id, listOfBlogs[0]._id);
+    // console.log(response.body[0]._id, listOfBlogs[0]._id);
+
+    assert(mongoose.isValidObjectId(response.body[0].id));
+  });
 });
 
 after(async () => {
