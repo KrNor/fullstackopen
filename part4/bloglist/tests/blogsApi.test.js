@@ -61,7 +61,7 @@ describe("Blog api tests", async () => {
     // console.log(contents);
     assert(contents.includes("The book of one of the books"));
   });
-  test("Blog creation test", async () => {
+  test("Blog creation test without initial likes", async () => {
     const newBlogg = {
       title: "Not The book of one of the books",
       author: "Kaprenicas Abralon",
