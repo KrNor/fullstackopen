@@ -6,12 +6,26 @@ BlogRouter.get("/", async (request, response) => {
   response.json(blog);
 });
 
-BlogRouter.post("/", (request, response) => {
-  const blog = new Blog(request.body);
+BlogRouter.post("/", async (request, response) => {
+  // const body = request.body;
 
-  blog.save().then((result) => {
-    response.status(201).json(result);
+  // const note = new Note({
+  //   content: body.content,
+  //   important: body.important || false,
+  // });
+  // const savedNote = await note.save();
+  // response.status(201).json(savedNote);
+
+  const body = request.body;
+  const blog = new Blog({
+    title: body.title,
+    author: body.author,
+    url: body.url,
+    likes: body.likes,
   });
+  // console.log(blog);
+  const ress = await blog.save();
+  response.status(201).json(ress);
 });
 
 module.exports = BlogRouter;

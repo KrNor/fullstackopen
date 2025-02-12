@@ -3,7 +3,7 @@ const assert = require("node:assert");
 const mongoose = require("mongoose");
 const supertest = require("supertest");
 const app = require("../app");
-const { listWithOneBlog, listOfBlogs } = require("./test_helper");
+const { listWithOneBlog, listOfBlogs, blogsInDb } = require("./test_helper");
 const Blog = require("../models/blog");
 
 const api = supertest(app);
@@ -38,6 +38,28 @@ describe("Blog api tests", async () => {
     // console.log(response.body[0]._id, listOfBlogs[0]._id);
 
     assert(mongoose.isValidObjectId(response.body[0].id));
+  });
+  test("Blog creation test", async () => {
+    const newBlogg = {
+      title: "The book of one of the books",
+      author: "Kaprenicas Abralon",
+      url: "www.drthjpodrtyijhgnmdrxtiolnhduljbrtn.notexist.notcom",
+      likes: 10,
+    };
+    const response = await api
+      .post("/api/blogs")
+      .send(newBlogg)
+      .expect(201)
+      .expect("Content-Type", /application\/json/);
+
+    const resultOfPostingBlog = await blogsInDb();
+    // console.log(resultOfPostingBlog);
+    // console.log(response.body);
+    // console.log(resultOfPostingBlog.length);
+    assert.strictEqual(resultOfPostingBlog.length, listOfBlogs.length + 1);
+    const contents = resultOfPostingBlog.map((n) => n.title);
+    // console.log(contents);
+    assert(contents.includes("The book of one of the books"));
   });
 });
 
