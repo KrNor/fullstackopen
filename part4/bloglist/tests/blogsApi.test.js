@@ -97,6 +97,39 @@ describe("Blog api tests", async () => {
   });
 });
 
+describe("Blog update and delete testcases", () => {
+  test("updating a blog", async () => {
+    const blogToUpdate = {
+      title: "Not The book of one of the books",
+      author: "Kaprenicas Abralon",
+      url: "www.notdrthjpodrtyijhgnmdrxtiolnhduljbrtn.yesexist.notcom",
+      likes: 10,
+    };
+    // const resultOfPostingBlog = await blogsInDb();
+    // console.log(resultOfPostingBlog);
+    const response = await api
+      .put("/api/blogs/5a422aa71b54a676234d17f8")
+      .send(blogToUpdate)
+      .expect(200)
+      .expect("Content-Type", /application\/json/);
+    // console.log(blogToUpdate.likes, " and ", response.body.likes);
+    // console.log(response.body);
+    assert.deepStrictEqual(blogToUpdate.likes, response.body.likes);
+    assert.deepStrictEqual(blogToUpdate.author, response.body.author);
+    assert.deepStrictEqual(blogToUpdate.url, response.body.url);
+    assert.deepStrictEqual(blogToUpdate.title, response.body.title);
+  });
+  test("Deleting a blog", async () => {
+    const response = await api
+      .delete("/api/blogs/5a422aa71b54a676234d17f8")
+      .expect(204);
+
+    const resultOfBlog = await blogsInDb();
+    // console.log(resultOfBlog.length, " and ", listOfBlogs.length);
+    assert.strictEqual(resultOfBlog.length, listOfBlogs.length - 1);
+  });
+});
+
 after(async () => {
   await mongoose.connection.close();
 });

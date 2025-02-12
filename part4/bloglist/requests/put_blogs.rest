@@ -1,0 +1,9 @@
+PUT http://localhost:3003/api/blogs/67a9d05bd0c22bcbf69f8cdc
+Content-Type: application/json
+
+{
+    "title": "A book that is testing the thing part 2",
+    "author": "Mike Michaelson",
+    "url": "https://homepages.cwi.nl/~storm/teaching/listener/mike.pdf",
+    "likes": 52
+}
