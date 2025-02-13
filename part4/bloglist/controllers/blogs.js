@@ -4,14 +4,6 @@ const Blog = require("../models/blog");
 const User = require("../models/user");
 var ObjectId = require("mongoose").Types.ObjectId;
 
-const getTokenFrom = (request) => {
-  const authorization = request.get("authorization");
-  if (authorization && authorization.startsWith("Bearer ")) {
-    return authorization.replace("Bearer ", "");
-  }
-  return null;
-};
-
 BlogRouter.get("/", async (request, response, next) => {
   const blog = await Blog.find({}).populate("user", {
     username: 1,
@@ -22,14 +14,15 @@ BlogRouter.get("/", async (request, response, next) => {
 
 BlogRouter.post("/", async (request, response, next) => {
   const body = request.body;
-  const decodedToken = jwt.verify(getTokenFrom(request), process.env.SECRET);
+  // console.log(request.token);
+  const decodedToken = jwt.verify(request.token, process.env.SECRET);
   if (!decodedToken.id) {
     return response.status(401).json({ error: "token invalid" });
   }
+
+  // request.token
   const user = await User.findById(decodedToken.id);
 
-  // const tempCreator = await User.findById("67ada2b3518a033051b0ec31");
-  // console.log(user.id);
   const blog = new Blog({
     title: body.title,
     author: body.author,
@@ -37,7 +30,7 @@ BlogRouter.post("/", async (request, response, next) => {
     likes: body.likes,
     user: user.id,
   });
-  const ress = await blog.save();
+  let ress = await blog.save();
   user.blogs.push(ress.id);
   await user.save();
   // console.log(user.notes);

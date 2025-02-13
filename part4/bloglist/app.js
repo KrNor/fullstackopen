@@ -6,6 +6,7 @@ require("express-async-errors");
 const app = express();
 const cors = require("cors");
 const mongoose = require("mongoose");
+const middleware = require("./utils/middleware");
 const blogRouter = require("./controllers/blogs");
 const usersRouter = require("./controllers/users");
 const loginRouter = require("./controllers/login");
@@ -16,32 +17,11 @@ mongoose.connect(mongoUrl);
 
 app.use(cors());
 app.use(express.json());
+app.use(middleware.tokenExtractor);
 app.use("/api/blogs", blogRouter);
 app.use("/api/users", usersRouter);
 app.use("/api/login", loginRouter);
-// error middleware, make new file for this later
-app.use((error, request, response, next) => {
-  console.log(error.message);
 
-  if (error.name === "CastError") {
-    return response.status(400).send({ error: "malformatted id" });
-  } else if (error.name === "ValidationError") {
-    return response.status(400).json({ error: error.message });
-  } else if (
-    error.name === "MongoServerError" &&
-    error.message.includes("E11000 duplicate key error")
-  ) {
-    return response.status(400).send({
-      error: "The username is already taken, please pick another one",
-    });
-  } else if (error.message === "bad password") {
-    return response.status(400).json({
-      error: "please write a password that is at least 3 letters long",
-    });
-  } else if (error.name === "JsonWebTokenError") {
-    return response.status(401).json({ error: "token invalid" });
-  }
-  next(error);
-});
+app.use(middleware.errorHandler);
 
 module.exports = app;
