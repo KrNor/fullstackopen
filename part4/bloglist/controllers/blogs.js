@@ -20,7 +20,6 @@ BlogRouter.post("/", async (request, response, next) => {
     return response.status(401).json({ error: "token invalid" });
   }
 
-  // request.token
   const user = await User.findById(decodedToken.id);
 
   const blog = new Blog({
@@ -44,12 +43,40 @@ BlogRouter.post("/", async (request, response, next) => {
 });
 
 BlogRouter.delete("/:id", async (request, response, next) => {
-  const deletedBlog = await Blog.findByIdAndDelete(request.params.id);
-  if (deletedBlog) {
-    response.status(204).end();
-  } else {
-    response.status(404).end();
+  const decodedToken = jwt.verify(request.token, process.env.SECRET);
+  if (!decodedToken.id) {
+    return response.status(401).json({ error: "token invalid" });
   }
+  const user = await User.findById(decodedToken.id);
+  if (!user) {
+    return response.status(401).json({ error: "token invalid" });
+  }
+
+  const blogToDelete = await Blog.findById(request.params.id);
+  if (!blogToDelete) {
+    return response
+      .status(404)
+      .json({ error: "Blog you wanted to delete was not fount" });
+  }
+  // console.log(blogToDelete);
+
+  // console.log(user.id, "     ", blogToDelete.user.toString());
+  if (user.id.toString() === blogToDelete.user.toString()) {
+    const resultat = await Blog.findByIdAndDelete(blogToDelete.id);
+    // console.log(resultat);
+    if (resultat) {
+      // console.log("the blog was deleted");
+      return response.status(204).end();
+    } else {
+      console.log("the blog doesnt exist");
+      return response
+        .status(404)
+        .json({ error: "Blog you wanted to delete was not fount" }); // should probably delete this one and it shouldn't get called ever, but ill keep it for now
+    }
+  }
+  response
+    .status(404)
+    .json({ error: "Blog you wanted to delete was not fount" });
 });
 
 BlogRouter.put("/:id", async (request, response, next) => {
@@ -72,7 +99,7 @@ BlogRouter.put("/:id", async (request, response, next) => {
     if (NewBlog) {
       response.json(NewBlog);
     } else {
-      response.status(400).json({});
+      response.status(400).end();
     }
   }
 });

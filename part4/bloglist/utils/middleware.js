@@ -1,5 +1,4 @@
 const tokenExtractor = (request, response, next) => {
-  // console.log("extracting the tolken");
   const authorization = request.get("authorization");
   if (authorization && authorization.startsWith("Bearer ")) {
     request.token = authorization.replace("Bearer ", "");
@@ -28,6 +27,10 @@ const errorHandler = (error, request, response, next) => {
     });
   } else if (error.name === "JsonWebTokenError") {
     return response.status(401).json({ error: "token invalid" });
+  } else if (error.name === "TokenExpiredError") {
+    return response
+      .status(401)
+      .json({ error: "The token expired please relogin" });
   }
   next(error);
 };
