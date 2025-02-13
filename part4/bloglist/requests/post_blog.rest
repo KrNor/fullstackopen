@@ -1,5 +1,6 @@
 POST http://localhost:3003/api/blogs
 Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6IlNhZEJveTEyMyIsImlkIjoiNjdhZGNlZWMwNjdhOTBiOGVkMzUyZTI1IiwiaWF0IjoxNzM5NDUxMzMzLCJleHAiOjE3Mzk0NTQ5MzN9.HJFlcswSJA_fyTcgCwOkSJ8xhvsn1NJj0xUNJRWCPrQ
 
 {
     "title":"Alans big day",

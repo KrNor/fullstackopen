@@ -38,6 +38,8 @@ app.use((error, request, response, next) => {
     return response.status(400).json({
       error: "please write a password that is at least 3 letters long",
     });
+  } else if (error.name === "JsonWebTokenError") {
+    return response.status(401).json({ error: "token invalid" });
   }
   next(error);
 });

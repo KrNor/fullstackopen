@@ -1,7 +1,16 @@
 const BlogRouter = require("express").Router();
+const jwt = require("jsonwebtoken");
 const Blog = require("../models/blog");
 const User = require("../models/user");
 var ObjectId = require("mongoose").Types.ObjectId;
+
+const getTokenFrom = (request) => {
+  const authorization = request.get("authorization");
+  if (authorization && authorization.startsWith("Bearer ")) {
+    return authorization.replace("Bearer ", "");
+  }
+  return null;
+};
 
 BlogRouter.get("/", async (request, response, next) => {
   const blog = await Blog.find({}).populate("user", {
@@ -13,19 +22,25 @@ BlogRouter.get("/", async (request, response, next) => {
 
 BlogRouter.post("/", async (request, response, next) => {
   const body = request.body;
-  const tempCreator = await User.findById("67ada2b3518a033051b0ec31");
-  console.log(tempCreator.id);
+  const decodedToken = jwt.verify(getTokenFrom(request), process.env.SECRET);
+  if (!decodedToken.id) {
+    return response.status(401).json({ error: "token invalid" });
+  }
+  const user = await User.findById(decodedToken.id);
+
+  // const tempCreator = await User.findById("67ada2b3518a033051b0ec31");
+  // console.log(user.id);
   const blog = new Blog({
     title: body.title,
     author: body.author,
     url: body.url,
     likes: body.likes,
-    user: tempCreator.id,
+    user: user.id,
   });
   const ress = await blog.save();
-  tempCreator.blogs.push(ress.id);
-  await tempCreator.save();
-  console.log(tempCreator.notes);
+  user.blogs.push(ress.id);
+  await user.save();
+  // console.log(user.notes);
   // console.log(ress);
   if (ress) {
     response.status(201).json(ress);
