@@ -29,6 +29,10 @@ app.use((error, request, response, next) => {
     return response.status(400).send({
       error: "The username is already taken, please pick another one",
     });
+  } else if (error.message === "bad password") {
+    return response.status(400).json({
+      error: "please write a password that is at least 3 letters long",
+    });
   }
   next(error);
 });

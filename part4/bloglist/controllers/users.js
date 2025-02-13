@@ -5,6 +5,10 @@ const User = require("../models/user");
 usersRouter.post("/", async (request, response) => {
   const { username, name, password } = request.body;
 
+  if (!password || password.length < 3) {
+    throw Error("bad password");
+  }
+
   const saltRounds = 10;
   const passwordHash = await bcrypt.hash(password, saltRounds);
 
