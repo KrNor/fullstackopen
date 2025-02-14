@@ -72,9 +72,6 @@ describe("Blog api tests", async () => {
       .expect("Content-Type", /application\/json/);
 
     const resultOfPostingBlog = await blogsInDb();
-    // console.log(resultOfPostingBlog);
-    // console.log(response.body);
-    // console.log(resultOfPostingBlog.length);
     assert.strictEqual(resultOfPostingBlog.length, listOfBlogs.length + 1);
     const contents = resultOfPostingBlog.map((n) => n.title);
     // console.log(contents);
@@ -153,7 +150,7 @@ describe("Blog api tests", async () => {
   });
   // });
 
-  // the task only said to fix the test for adding a new blog, not the ones to update/delete them so I am commenting them out for now
+  // the task only said to fix the tests for adding a new blog, not the ones to update/delete them so I am commenting them out for now
 
   // describe("Blog update and delete testcases", () => {
   //   test("updating a blog", async () => {

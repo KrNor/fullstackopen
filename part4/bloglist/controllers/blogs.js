@@ -1,7 +1,5 @@
 const BlogRouter = require("express").Router();
-const jwt = require("jsonwebtoken");
 const Blog = require("../models/blog");
-const User = require("../models/user");
 var ObjectId = require("mongoose").Types.ObjectId;
 const middleware = require("../utils/middleware");
 
