@@ -25,7 +25,7 @@ const App = () => {
 
   useEffect(() => {
     blogService.getAll().then((blogs) => setBlogs(blogs));
-  }, []);
+  }, [visible]);
 
   useEffect(() => {
     const loggedUserJSON = window.localStorage.getItem("loggedBlogappUser");
@@ -63,6 +63,10 @@ const App = () => {
     window.localStorage.removeItem("loggedBlogappUser");
     setUser(null);
     handleError("logout succsessfull");
+  };
+
+  const afterAddBlog = () => {
+    blogService.getAll().then((blogs) => setBlogs(blogs));
   };
 
   if (user === null) {
@@ -109,7 +113,11 @@ const App = () => {
         setVisibility={setVisible}
         visibility={visible}
       >
-        <CreateBlog errorFunc={handleError} setVisibility={setVisible} />
+        <CreateBlog
+          errorFunc={handleError}
+          setVisibility={setVisible}
+          onBlogCreation={afterAddBlog}
+        />
       </Togglable>
 
       {blogs.map((blog) => (

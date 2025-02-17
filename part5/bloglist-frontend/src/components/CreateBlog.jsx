@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import Blog from "../services/blogs";
 
-const CreateBlog = ({ errorFunc, setVisibility }) => {
+const CreateBlog = ({ errorFunc, setVisibility, onBlogCreation }) => {
   const [blogTitle, setBlogTitle] = useState("");
   const [blogAuthor, setBlogAuthor] = useState("");
   const [blogUrl, setBlogUrl] = useState("");
@@ -22,6 +22,7 @@ const CreateBlog = ({ errorFunc, setVisibility }) => {
         `a new blog called: "${newBlog.title}" was added!, it was written by:${newBlog.author}`
       );
       setVisibility(false); // hides after submission
+      onBlogCreation();
     } catch (error) {
       errorFunc("there was a problem with creating the blog, try again");
     }
