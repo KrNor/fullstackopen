@@ -1,23 +1,29 @@
 import { useState, useEffect } from "react";
 import Blog from "../services/blogs";
 
-const CreateBlog = ({ title, author, url }) => {
+const CreateBlog = ({ errorFunc }) => {
   const [blogTitle, setBlogTitle] = useState("");
   const [blogAuthor, setBlogAuthor] = useState("");
   const [blogUrl, setBlogUrl] = useState("");
 
-  const handleCreate = (event) => {
+  const handleCreate = async (event) => {
     event.preventDefault();
-    const newBlog = {
-      title: blogTitle,
-      author: blogAuthor,
-      url: blogUrl,
-    };
-    Blog.create(newBlog);
-    setBlogTitle("");
-    setBlogAuthor("");
-    setBlogUrl("");
-    console.log("a blog was created");
+    try {
+      const newBlog = {
+        title: blogTitle,
+        author: blogAuthor,
+        url: blogUrl,
+      };
+      await Blog.create(newBlog);
+      setBlogTitle("");
+      setBlogAuthor("");
+      setBlogUrl("");
+      errorFunc(
+        `a new blog called: "${newBlog.title}" was added!, it was written by:${newBlog.author}`
+      );
+    } catch (error) {
+      errorFunc("there was a problem with creating the blog, try again");
+    }
   };
   return (
     <div>
