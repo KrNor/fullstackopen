@@ -1,7 +1,34 @@
 import { useState, useEffect } from "react";
 import BlogService from "../services/blogs";
 
-const Blog = ({ blog, errorHandler }) => {
+const DeleteButton = ({ blog, user, errorHandler }) => {
+  const handleBlogDeletion = async () => {
+    // finish
+    if (
+      window.confirm(
+        `are you sure you want to delete the blog with id:"${blog.id}"`
+      )
+    ) {
+      try {
+        await BlogService.deleteBlog(blog.id);
+        errorHandler("the blog was succsessfully deleted!");
+      } catch (error) {
+        errorHandler("there was a problem trying to delete the blog");
+      }
+    }
+  };
+  return (
+    <button
+      onClick={() => {
+        handleBlogDeletion();
+      }}
+    >
+      delete post
+    </button>
+  );
+};
+
+const Blog = ({ blog, user, errorHandler }) => {
   const [blogShown, setBlogShown] = useState(false);
   const [likeCount, setLikeCount] = useState(blog.likes);
   const blogStyle = {
@@ -37,6 +64,16 @@ const Blog = ({ blog, errorHandler }) => {
       </div>
     );
   } else {
+    let deleteButtonStyle = {};
+    // console.log(blog.user.username);
+    // console.log(user.username);
+    if (blog.user.username === user.username) {
+      // comparing by unique username to check if the delete button needs to be shown
+      deleteButtonStyle = { display: "" };
+    } else {
+      deleteButtonStyle = { display: "none" };
+    }
+
     return (
       <div style={blogStyle}>
         <p>{blog.title}</p> <p>{blog.author}</p>
@@ -53,6 +90,9 @@ const Blog = ({ blog, errorHandler }) => {
         >
           hide
         </button>
+        <div style={deleteButtonStyle}>
+          <DeleteButton blog={blog} errorHandler={errorHandler} />
+        </div>
       </div>
     );
   }
