@@ -73,29 +73,36 @@ BlogRouter.delete(
   }
 );
 
-BlogRouter.put("/:id", async (request, response, next) => {
-  if (ObjectId.isValid(request.params.id)) {
-    const body = request.body;
-    // console.log(request.params.id);
-    const NewBlog = await Blog.findByIdAndUpdate(
-      request.params.id,
-      {
-        title: body.title,
-        author: body.author,
-        url: body.url,
-        likes: body.likes,
-      },
-      {
-        new: true,
+BlogRouter.put(
+  "/:id",
+  middleware.userExtractor,
+  async (request, response, next) => {
+    const user = request.user;
+    if (ObjectId.isValid(request.params.id) && user.id !== request.body.user) {
+      const body = request.body;
+      // console.log(request.params.id);
+      const NewBlog = await Blog.findByIdAndUpdate(
+        request.params.id,
+        {
+          title: body.title,
+          author: body.author,
+          url: body.url,
+          likes: body.likes,
+        },
+        {
+          new: true,
+        }
+      );
+      // console.log(NewBlog);
+      if (NewBlog) {
+        response.json(NewBlog);
+      } else {
+        response.status(400).end();
       }
-    );
-    // console.log(NewBlog);
-    if (NewBlog) {
-      response.json(NewBlog);
     } else {
-      response.status(400).end();
+      response.status(404).json({ error: "invalid request" });
     }
   }
-});
+);
 
 module.exports = BlogRouter;
