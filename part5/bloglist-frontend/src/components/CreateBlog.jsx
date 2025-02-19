@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import Blog from "../services/blogs";
 
 const CreateBlog = ({ errorFunc, setVisibility, onBlogCreation }) => {

@@ -1,9 +1,8 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import BlogService from "../services/blogs";
 
-const DeleteButton = ({ blog, user, errorHandler }) => {
+const DeleteButton = ({ blog, errorHandler }) => {
   const handleBlogDeletion = async () => {
-    // finish
     if (
       window.confirm(
         `are you sure you want to delete the blog with id:"${blog.id}"`

@@ -1,9 +1,10 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import Blog from "./components/Blog";
 import blogService from "./services/blogs";
 import loginService from "./services/login";
 import CreateBlog from "./components/CreateBlog";
 import Togglable from "./components/Togglable";
+import WelcomeBox from "./components/WelcomeBox";
 
 const Notification = ({ message }) => {
   if (message === null) {
@@ -22,6 +23,8 @@ const App = () => {
   const [errorMessage, setErrorMessage] = useState(null);
 
   const [visible, setVisible] = useState(false);
+
+  const helloBoxRef = useRef();
 
   useEffect(() => {
     blogService.getAll().then((blogs) => setBlogs(blogs));
@@ -69,6 +72,10 @@ const App = () => {
     blogService.getAll().then((blogs) => setBlogs(blogs));
   };
 
+  const makeLocalNicknameBetter = () => {
+    helloBoxRef.current.setPersonalNickname();
+  };
+
   if (user === null) {
     return (
       <div>
@@ -104,10 +111,13 @@ const App = () => {
       <Notification message={errorMessage} />
       <h2>The list of blogs!</h2>
 
-      <p>
-        hello {user.name} welcome back!{" "}
-        <button onClick={handleLogout}>logout</button>
-      </p>
+      <WelcomeBox
+        buttonLabel="WelcomeBox"
+        ref={helloBoxRef}
+        user={user}
+        handleLogout={handleLogout}
+      />
+      <button onClick={makeLocalNicknameBetter}>make my nickname better</button>
       <Togglable
         buttonLabel="create new blog"
         setVisibility={setVisible}
