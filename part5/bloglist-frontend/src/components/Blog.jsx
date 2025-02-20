@@ -37,6 +37,7 @@ const Blog = ({ blog, user, errorHandler }) => {
     borderWidth: 1,
     marginBottom: 5,
   };
+  // const increaseLikeCount =
   const handleLikeClick = async () => {
     try {
       const updatedBlog = await BlogService.likePost(blog);

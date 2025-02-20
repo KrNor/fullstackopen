@@ -4,9 +4,11 @@ import userEvent from "@testing-library/user-event";
 import { describe, expect } from "vitest";
 
 describe("Blog component testing", () => {
+  let mockHandler;
   let container;
   let blog;
   beforeEach(() => {
+    mockHandler = vi.fn();
     blog = {
       user: "67ada3b63b0950d2668499d3",
       likes: 3,
@@ -15,7 +17,9 @@ describe("Blog component testing", () => {
       author: "Lewis Carroll",
       id: "67ae09bab5b2723ef21dfc4d",
     };
-    container = render(<Blog blog={blog} />).container;
+    container = render(
+      <Blog blog={blog} errorHandler={mockHandler} />
+    ).container;
   });
 
   test("renders author and title, but not url or likecount", () => {
@@ -43,5 +47,16 @@ describe("Blog component testing", () => {
     // screen.debug(blogUrl);
     expect(blogUrl).toHaveTextContent(blog.url);
     expect(blogLikecount).toHaveTextContent(blog.likes);
+  });
+  test("button is clicked twice, event handler that component recieved is called twice", async () => {
+    const user = userEvent.setup();
+    const button = screen.getByText("show");
+    await user.click(button);
+
+    const buttonLike = screen.getByText("like");
+    await user.click(buttonLike);
+    await user.click(buttonLike);
+    //console.log(mockHandler.mock.calls); // result is 2 errors from the call, and it should be that way because nobody is logged in
+    expect(mockHandler).toHaveBeenCalledTimes(2);
   });
 });
