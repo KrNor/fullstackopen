@@ -67,7 +67,8 @@ const Blog = ({ blog, user, errorHandler }) => {
     let deleteButtonStyle = {};
     // console.log(blog.user.username);
     // console.log(user.username);
-    if (blog.user.username === user.username) {
+    if (user && blog.user.username === user.username) {
+      // added to check if user exists only for testing
       // comparing by unique username to check if the delete button needs to be shown
       deleteButtonStyle = { display: "" };
     } else {
