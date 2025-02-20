@@ -48,11 +48,12 @@ const Blog = ({ blog, user, errorHandler }) => {
       );
     }
   };
-
+  // <span className=></span>
   if (!blogShown) {
     return (
-      <div style={blogStyle}>
-        {blog.title} {blog.author}{" "}
+      <div style={blogStyle} className="simple-blog">
+        <span className="title-blog">{blog.title}</span>{" "}
+        <span className="author-blog">{blog.author}</span>
         <button
           onClick={() => {
             setBlogShown(true);
@@ -75,13 +76,16 @@ const Blog = ({ blog, user, errorHandler }) => {
 
     return (
       <div style={blogStyle}>
-        <p>{blog.title}</p> <p>{blog.author}</p>
-        <p>{blog.url}</p>
+        <span className="title-blog">{blog.title}</span>{" "}
+        <span className="author-blog">{blog.author}</span>{" "}
+        <span className="url-blog">{blog.url}</span>{" "}
         <p>
-          {likeCount}
+          <span className="likecount-blog">{likeCount}</span>
           <button onClick={() => handleLikeClick()}>like</button>
         </p>
-        <p>{blog.user.name}</p>
+        <p>
+          <span className="user-name-blog">{blog.user.name}</span>
+        </p>
         <button
           onClick={() => {
             setBlogShown(false);
