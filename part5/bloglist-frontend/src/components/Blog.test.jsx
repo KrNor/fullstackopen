@@ -32,19 +32,15 @@ describe("Blog component testing", () => {
     expect(blogUrl).toBeNull();
     expect(blogLikecount).toBeNull();
   });
-  test("author and title are shown after show button is clicked", async () => {
+  test("url and number of likes after show button is clicked", async () => {
     const user = userEvent.setup();
 
     const button = screen.getByText("show");
     await user.click(button);
-    const blogAuthor = container.querySelector(".author-blog");
-    const blogTitle = container.querySelector(".title-blog");
     const blogUrl = container.querySelector(".url-blog");
     const blogLikecount = container.querySelector(".likecount-blog");
 
     // screen.debug(blogUrl);
-    expect(blogTitle).toHaveTextContent(blog.title);
-    expect(blogAuthor).toHaveTextContent(blog.author);
     expect(blogUrl).toHaveTextContent(blog.url);
     expect(blogLikecount).toHaveTextContent(blog.likes);
   });
