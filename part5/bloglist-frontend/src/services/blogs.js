@@ -24,7 +24,7 @@ const deleteBlog = async (idToDelete) => {
 };
 const likePost = async (likedBlog) => {
   const config = { headers: { Authorization: token } };
-  console.log(likedBlog);
+  // console.log(likedBlog);
   const updatedBlog = {
     user: likedBlog.user.id,
     likes: likedBlog.likes + 1,

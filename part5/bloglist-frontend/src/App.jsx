@@ -67,7 +67,18 @@ const App = () => {
     setUser(null);
     handleError("logout succsessfull");
   };
-
+  const handleCreateBlog = async (newBlog) => {
+    try {
+      // console.log(newBlog);
+      await blogService.create(newBlog);
+      handleError(
+        `a new blog called: "${newBlog.title}" was added!, it was written by:${newBlog.author}`
+      );
+      afterAddBlog();
+    } catch (error) {
+      handleError("there was a problem with creating the blog, try again");
+    }
+  };
   const afterAddBlog = () => {
     blogService.getAll().then((blogs) => setBlogs(blogs));
   };
@@ -124,9 +135,8 @@ const App = () => {
         visibility={visible}
       >
         <CreateBlog
-          errorFunc={handleError}
           setVisibility={setVisible}
-          onBlogCreation={afterAddBlog}
+          handleCreateBlog={handleCreateBlog}
         />
       </Togglable>
 

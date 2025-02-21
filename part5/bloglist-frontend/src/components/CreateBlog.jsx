@@ -1,12 +1,12 @@
 import { useState } from "react";
 import Blog from "../services/blogs";
 
-const CreateBlog = ({ errorFunc, setVisibility, onBlogCreation }) => {
+const CreateBlog = ({ setVisibility, handleCreateBlog }) => {
   const [blogTitle, setBlogTitle] = useState("");
   const [blogAuthor, setBlogAuthor] = useState("");
   const [blogUrl, setBlogUrl] = useState("");
 
-  const handleCreate = async (event) => {
+  const handleCreateInForm = async (event) => {
     event.preventDefault();
     try {
       const newBlog = {
@@ -14,26 +14,25 @@ const CreateBlog = ({ errorFunc, setVisibility, onBlogCreation }) => {
         author: blogAuthor,
         url: blogUrl,
       };
-      await Blog.create(newBlog);
+      await handleCreateBlog(newBlog);
+      // await Blog.create(newBlog);
       setBlogTitle("");
       setBlogAuthor("");
       setBlogUrl("");
-      errorFunc(
-        `a new blog called: "${newBlog.title}" was added!, it was written by:${newBlog.author}`
-      );
       setVisibility(false); // hides after submission
-      onBlogCreation();
+      // console.log("GOOD creation was succsessfull");
     } catch (error) {
-      errorFunc("there was a problem with creating the blog, try again");
+      // console.log("BAD creation was not succsessfull");
     }
   };
   return (
     <div>
-      <form>
+      <form onSubmit={handleCreateInForm} className="form-createblog">
         <div>
           <p>
             title:{" "}
             <input
+              id="title-input"
               type="text"
               value={blogTitle}
               name="title"
@@ -43,6 +42,7 @@ const CreateBlog = ({ errorFunc, setVisibility, onBlogCreation }) => {
           <p>
             author:{" "}
             <input
+              id="author-input"
               type="text"
               value={blogAuthor}
               name="author"
@@ -52,13 +52,16 @@ const CreateBlog = ({ errorFunc, setVisibility, onBlogCreation }) => {
           <p>
             url:{" "}
             <input
+              id="url-input"
               type="text"
               value={blogUrl}
               name="url"
               onChange={({ target }) => setBlogUrl(target.value)}
             ></input>
           </p>
-          <button onClick={handleCreate}>create</button>
+          <button type="submit" id="create-button-input">
+            create
+          </button>
         </div>
       </form>
     </div>
