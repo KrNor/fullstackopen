@@ -78,7 +78,8 @@ BlogRouter.put(
   middleware.userExtractor,
   async (request, response, next) => {
     const user = request.user;
-    if (ObjectId.isValid(request.params.id) && user.id !== request.body.user) {
+    if (ObjectId.isValid(request.params.id)) {
+      //&& user.id !== request.body.user) {
       const body = request.body;
       // console.log(request.params.id);
       const NewBlog = await Blog.findByIdAndUpdate(
@@ -95,7 +96,7 @@ BlogRouter.put(
       );
       // console.log(NewBlog);
       if (NewBlog) {
-        response.json(NewBlog);
+        response.status(200).json(NewBlog);
       } else {
         response.status(400).end();
       }

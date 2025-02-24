@@ -78,7 +78,7 @@ const Blog = ({ blog, user, errorHandler }) => {
     }
 
     return (
-      <div style={blogStyle}>
+      <div style={blogStyle} className="detailed-blog">
         <span className="title-blog">{blog.title}</span>{" "}
         <span className="author-blog">{blog.author}</span>{" "}
         <span className="url-blog">{blog.url}</span>{" "}

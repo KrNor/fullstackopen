@@ -1,4 +1,10 @@
-const { test, expect, beforeEach, describe } = require("@playwright/test");
+const {
+  test,
+  expect,
+  beforeEach,
+  describe,
+  waitFor,
+} = require("@playwright/test");
 
 describe("Blog app", () => {
   beforeEach(async ({ page, request }) => {
@@ -8,6 +14,13 @@ describe("Blog app", () => {
         username: "asd",
         name: "Anna",
         password: "asd",
+      },
+    });
+    await request.post("/api/users", {
+      data: {
+        username: "qwe",
+        name: "Tom",
+        password: "qwe",
       },
     });
     await page.goto("/");
@@ -52,10 +65,45 @@ describe("Blog app", () => {
         await page.getByTestId("author-blog").fill("Name Surname");
         await page.getByTestId("url-blog").fill("www.a.w.e.b.si.te.asdd");
         await page.getByRole("button", { name: "create" }).click();
-        await expect(page.getByText("The title of a new post")).toBeVisible();
         await expect(
           page.getByTestId("list-of-blog").getByText("The title of a new post")
         ).toBeVisible();
+      });
+      describe("When a user is logged in and a blog is already added", async () => {
+        // because I made that a user can't like its own blogs I have to create the blog and then logout and login with another user
+        // I made this harder for myself for no reason
+        // edit1: I removed that limitation to make it more easy
+        test("the logging in, making post and logging out", async ({
+          page,
+        }) => {
+          await page.getByRole("button", { name: "create new blog" }).click();
+          await page.getByTestId("title-blog").fill("The title of a new post");
+          await page.getByTestId("author-blog").fill("Name Surname");
+          await page.getByTestId("url-blog").fill("www.a.w.e.b.si.te.asdd");
+          await page.getByRole("button", { name: "create" }).click();
+          await expect(
+            page
+              .getByTestId("list-of-blog")
+              .getByText("The title of a new post")
+          ).toBeVisible();
+
+          const blogToLikeElement = page
+            .getByTestId("list-of-blog")
+            .getByText("The title of a new post")
+            .locator("..");
+
+          await blogToLikeElement.getByRole("button", { name: "show" }).click();
+
+          const clickedLike = await blogToLikeElement
+            .getByRole("button", { name: "like" })
+            .click();
+          await expect(
+            await blogToLikeElement.locator(".likecount-blog")
+          ).toHaveText("1");
+          expect(
+            page.locator(".error").getByText("the post was liked")
+          ).toBeVisible();
+        });
       });
     });
   });
