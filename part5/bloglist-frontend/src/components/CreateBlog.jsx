@@ -32,6 +32,7 @@ const CreateBlog = ({ setVisibility, handleCreateBlog }) => {
           <p>
             title:{" "}
             <input
+              data-testid="title-blog"
               id="title-input"
               type="text"
               value={blogTitle}
@@ -42,6 +43,7 @@ const CreateBlog = ({ setVisibility, handleCreateBlog }) => {
           <p>
             author:{" "}
             <input
+              data-testid="author-blog"
               id="author-input"
               type="text"
               value={blogAuthor}
@@ -52,6 +54,7 @@ const CreateBlog = ({ setVisibility, handleCreateBlog }) => {
           <p>
             url:{" "}
             <input
+              data-testid="url-blog"
               id="url-input"
               type="text"
               value={blogUrl}
@@ -59,7 +62,11 @@ const CreateBlog = ({ setVisibility, handleCreateBlog }) => {
               onChange={({ target }) => setBlogUrl(target.value)}
             ></input>
           </p>
-          <button type="submit" id="create-button-input">
+          <button
+            type="submit"
+            id="create-button-input"
+            data-testid="submit-button-blog"
+          >
             create
           </button>
         </div>

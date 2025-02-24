@@ -53,6 +53,7 @@ const App = () => {
       // console.log(user);
       window.localStorage.setItem("loggedBlogappUser", JSON.stringify(user));
       setUser(user);
+      blogService.setToken(user.token);
       setUsername("");
       setPassword("");
       handleError("login succsessfull!");
@@ -141,17 +142,18 @@ const App = () => {
           handleCreateBlog={handleCreateBlog}
         />
       </Togglable>
-
-      {blogs
-        .sort((a, b) => b.likes - a.likes)
-        .map((blog) => (
-          <Blog
-            key={blog.id}
-            blog={blog}
-            user={user}
-            errorHandler={handleError}
-          />
-        ))}
+      <div data-testid="list-of-blog">
+        {blogs
+          .sort((a, b) => b.likes - a.likes)
+          .map((blog) => (
+            <Blog
+              key={blog.id}
+              blog={blog}
+              user={user}
+              errorHandler={handleError}
+            />
+          ))}
+      </div>
     </div>
   );
 };
