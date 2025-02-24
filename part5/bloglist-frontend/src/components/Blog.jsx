@@ -1,7 +1,7 @@
 import { useState } from "react";
 import BlogService from "../services/blogs";
 
-const DeleteButton = ({ blog, errorHandler }) => {
+const DeleteButton = ({ blog, errorHandler, afterChangeBlog }) => {
   const handleBlogDeletion = async () => {
     if (
       window.confirm(
@@ -11,8 +11,11 @@ const DeleteButton = ({ blog, errorHandler }) => {
       try {
         await BlogService.deleteBlog(blog.id);
         errorHandler("the blog was succsessfully deleted!");
+        afterChangeBlog();
+        // setVisibility(visibility);
       } catch (error) {
         errorHandler("there was a problem trying to delete the blog");
+        // setVisibility(visibility);
       }
     }
   };
@@ -27,7 +30,7 @@ const DeleteButton = ({ blog, errorHandler }) => {
   );
 };
 
-const Blog = ({ blog, user, errorHandler }) => {
+const Blog = ({ blog, user, errorHandler, afterChangeBlog }) => {
   const [blogShown, setBlogShown] = useState(false);
   const [likeCount, setLikeCount] = useState(blog.likes);
   const blogStyle = {
@@ -97,7 +100,11 @@ const Blog = ({ blog, user, errorHandler }) => {
           hide
         </button>
         <div style={deleteButtonStyle}>
-          <DeleteButton blog={blog} errorHandler={errorHandler} />
+          <DeleteButton
+            blog={blog}
+            errorHandler={errorHandler}
+            afterChangeBlog={afterChangeBlog}
+          />
         </div>
       </div>
     );

@@ -73,19 +73,19 @@ describe("Blog app", () => {
         // because I made that a user can't like its own blogs I have to create the blog and then logout and login with another user
         // I made this harder for myself for no reason
         // edit1: I removed that limitation to make it more easy
-        test("the logging in, making post and logging out", async ({
-          page,
-        }) => {
+        beforeEach(async ({ page }) => {
           await page.getByRole("button", { name: "create new blog" }).click();
           await page.getByTestId("title-blog").fill("The title of a new post");
           await page.getByTestId("author-blog").fill("Name Surname");
           await page.getByTestId("url-blog").fill("www.a.w.e.b.si.te.asdd");
           await page.getByRole("button", { name: "create" }).click();
-          await expect(
-            page
-              .getByTestId("list-of-blog")
-              .getByText("The title of a new post")
-          ).toBeVisible();
+        });
+        test("liking a post", async ({ page }) => {
+          // await expect(
+          //   page
+          //     .getByTestId("list-of-blog")
+          //     .getByText("The title of a new post")
+          // ).toBeVisible();
 
           const blogToLikeElement = page
             .getByTestId("list-of-blog")
@@ -103,6 +103,31 @@ describe("Blog app", () => {
           expect(
             page.locator(".error").getByText("the post was liked")
           ).toBeVisible();
+        });
+        test("deleting a post", async ({ page }) => {
+          // to auto accept the dialog messages
+          page.on("dialog", async (dialog) => {
+            console.log(`Dialog message: ${dialog.message()}`);
+            await dialog.accept();
+          });
+          const blogToLikeElement = page
+            .getByTestId("list-of-blog")
+            .getByText("The title of a new post")
+            .locator("..");
+
+          await blogToLikeElement.getByRole("button", { name: "show" }).click();
+
+          await blogToLikeElement
+            .getByRole("button", { name: "delete post" })
+            .click();
+          await expect(
+            page
+              .locator(".error")
+              .getByText("the blog was succsessfully deleted!")
+          ).toBeVisible();
+          await expect(
+            blogToLikeElement.getByText("The title of a new post")
+          ).not.toBeVisible();
         });
       });
     });

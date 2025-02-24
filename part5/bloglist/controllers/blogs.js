@@ -59,17 +59,18 @@ BlogRouter.delete(
       // console.log(resultat);
       if (resultat) {
         // console.log("the blog was deleted");
-        return response.status(204).end();
+        return response.json(resultat).status(200);
       } else {
-        console.log("the blog doesnt exist");
+        // console.log("the blog doesnt exist");
         return response
           .status(404)
           .json({ error: "Blog you wanted to delete was not fount" }); // should probably delete this one and it shouldn't get called ever, but ill keep it for now
       }
+    } else {
+      response
+        .status(404)
+        .json({ error: "Blog you wanted to delete was not fount" });
     }
-    response
-      .status(404)
-      .json({ error: "Blog you wanted to delete was not fount" });
   }
 );
 

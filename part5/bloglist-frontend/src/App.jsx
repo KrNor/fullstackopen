@@ -38,7 +38,6 @@ const App = () => {
       blogService.setToken(user.token);
     }
   }, []);
-
   const handleError = (message) => {
     setErrorMessage(message);
     // console.log(message);
@@ -75,12 +74,12 @@ const App = () => {
       handleError(
         `a new blog called: "${newBlog.title}" was added!, it was written by:${newBlog.author}`
       );
-      afterAddBlog();
+      afterChangeBlog();
     } catch (error) {
       handleError("there was a problem with creating the blog, try again");
     }
   };
-  const afterAddBlog = () => {
+  const afterChangeBlog = () => {
     blogService.getAll().then((blogs) => setBlogs(blogs));
   };
 
@@ -151,6 +150,7 @@ const App = () => {
               blog={blog}
               user={user}
               errorHandler={handleError}
+              afterChangeBlog={afterChangeBlog}
             />
           ))}
       </div>
