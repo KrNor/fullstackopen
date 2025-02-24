@@ -61,12 +61,12 @@ describe("Blog app", () => {
 
       test("a new blog can be created", async ({ page }) => {
         await page.getByRole("button", { name: "create new blog" }).click();
-        await page.getByTestId("title-blog").fill("The title of a new post");
+        await page.getByTestId("title-blog").fill("The title of a new blog");
         await page.getByTestId("author-blog").fill("Name Surname");
         await page.getByTestId("url-blog").fill("www.a.w.e.b.si.te.asdd");
         await page.getByRole("button", { name: "create" }).click();
         await expect(
-          page.getByTestId("list-of-blog").getByText("The title of a new post")
+          page.getByTestId("list-of-blog").getByText("The title of a new blog")
         ).toBeVisible();
       });
       describe("When a user is logged in and a blog is already added", async () => {
@@ -75,21 +75,15 @@ describe("Blog app", () => {
         // edit1: I removed that limitation to make it more easy
         beforeEach(async ({ page }) => {
           await page.getByRole("button", { name: "create new blog" }).click();
-          await page.getByTestId("title-blog").fill("The title of a new post");
+          await page.getByTestId("title-blog").fill("The title of a new blog");
           await page.getByTestId("author-blog").fill("Name Surname");
           await page.getByTestId("url-blog").fill("www.a.w.e.b.si.te.asdd");
           await page.getByRole("button", { name: "create" }).click();
         });
-        test("liking a post", async ({ page }) => {
-          // await expect(
-          //   page
-          //     .getByTestId("list-of-blog")
-          //     .getByText("The title of a new post")
-          // ).toBeVisible();
-
+        test("liking a blog", async ({ page }) => {
           const blogToLikeElement = page
             .getByTestId("list-of-blog")
-            .getByText("The title of a new post")
+            .getByText("The title of a new blog")
             .locator("..");
 
           await blogToLikeElement.getByRole("button", { name: "show" }).click();
@@ -101,10 +95,10 @@ describe("Blog app", () => {
             await blogToLikeElement.locator(".likecount-blog")
           ).toHaveText("1");
           expect(
-            page.locator(".error").getByText("the post was liked")
+            page.locator(".error").getByText("the blog was liked")
           ).toBeVisible();
         });
-        test("deleting a post", async ({ page }) => {
+        test("deleting a blog", async ({ page }) => {
           // to auto accept the dialog messages
           page.on("dialog", async (dialog) => {
             console.log(`Dialog message: ${dialog.message()}`);
@@ -112,13 +106,13 @@ describe("Blog app", () => {
           });
           const blogToLikeElement = page
             .getByTestId("list-of-blog")
-            .getByText("The title of a new post")
+            .getByText("The title of a new blog")
             .locator("..");
 
           await blogToLikeElement.getByRole("button", { name: "show" }).click();
 
           await blogToLikeElement
-            .getByRole("button", { name: "delete post" })
+            .getByRole("button", { name: "delete blog" })
             .click();
           await expect(
             page
@@ -126,7 +120,7 @@ describe("Blog app", () => {
               .getByText("the blog was succsessfully deleted!")
           ).toBeVisible();
           await expect(
-            blogToLikeElement.getByText("The title of a new post")
+            blogToLikeElement.getByText("The title of a new blog")
           ).not.toBeVisible();
         });
       });

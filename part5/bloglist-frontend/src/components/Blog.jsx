@@ -25,7 +25,7 @@ const DeleteButton = ({ blog, errorHandler, afterChangeBlog }) => {
         handleBlogDeletion();
       }}
     >
-      delete post
+      delete blog
     </button>
   );
 };
@@ -43,13 +43,13 @@ const Blog = ({ blog, user, errorHandler, afterChangeBlog }) => {
   // const increaseLikeCount =
   const handleLikeClick = async () => {
     try {
-      const updatedBlog = await BlogService.likePost(blog);
+      const updatedBlog = await BlogService.likeBlog(blog);
       // console.log(updatedBlog);
       setLikeCount(likeCount + 1); // this doesn't update the database with more likes, when it is pressed more than once, just a repeated request to original + 1, but I like it this way to be honest
-      errorHandler("the post was liked");
+      errorHandler("the blog was liked");
     } catch (error) {
       errorHandler(
-        "don't like your own posts (or something went wrong, if so try again later)"
+        "don't like your own blogs (or something went wrong, if so try again later)"
       );
     }
   };
