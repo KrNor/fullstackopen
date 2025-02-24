@@ -123,6 +123,34 @@ describe("Blog app", () => {
             blogToLikeElement.getByText("The title of a new blog")
           ).not.toBeVisible();
         });
+        test("logging out, and logging in another user to see if delete button is there", async ({
+          page,
+        }) => {
+          await page.getByRole("button", { name: "logout" }).click();
+
+          await expect(page.getByText("login")).toBeVisible();
+          await page.getByTestId("password").fill("qwe");
+          await page.getByTestId("username").fill("qwe");
+          await page.getByRole("button", { name: "login" }).click();
+          await expect(page.getByText("hello Tom welcome back!")).toBeVisible();
+          const blogElement = page
+            .getByTestId("list-of-blog")
+            .getByText("The title of a new blog")
+            .locator("..");
+
+          await blogElement.getByRole("button", { name: "show" }).click();
+          const blogUpdatedElement = page
+            .getByTestId("list-of-blog")
+            .getByText("The title of a new blog")
+            .locator("..");
+          await expect(blogUpdatedElement).toBeVisible();
+          await expect(
+            blogUpdatedElement.getByRole("button", { name: "hide" })
+          ).toBeVisible();
+          await expect(
+            blogUpdatedElement.getByRole("button", { name: "delete" })
+          ).not.toBeVisible();
+        });
       });
     });
   });
