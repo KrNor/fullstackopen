@@ -6,7 +6,7 @@ const WelcomeBox = forwardRef((props, refs) => {
   WelcomeBox.displayName = props.buttonLabel;
 
   const setPersonalNickname = () => {
-    setUserName("UWUrevenger");
+    setUserName("CollestNickname");
   };
   useImperativeHandle(refs, () => {
     return { setPersonalNickname };

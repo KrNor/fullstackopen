@@ -44,9 +44,8 @@ const Blog = ({ blog, user, errorHandler, afterChangeBlog }) => {
   const handleLikeClick = async () => {
     try {
       const updatedBlog = await BlogService.likeBlog(blog);
-      // console.log(updatedBlog);
-      setLikeCount(likeCount + 1); // this doesn't update the database with more likes, when it is pressed more than once, just a repeated request to original + 1, but I like it this way to be honest
-      errorHandler("the blog was liked");
+      setLikeCount(updatedBlog.likes);
+      afterChangeBlog();
     } catch (error) {
       errorHandler(
         "don't like your own blogs (or something went wrong, if so try again later)"
@@ -86,8 +85,12 @@ const Blog = ({ blog, user, errorHandler, afterChangeBlog }) => {
         <span className="author-blog">{blog.author}</span>{" "}
         <span className="url-blog">{blog.url}</span>{" "}
         <p>
-          <span className="likecount-blog">{likeCount}</span>
-          <button onClick={() => handleLikeClick()}>like</button>
+          <span data-testid="like-count" className="likecount-blog">
+            {likeCount}
+          </span>
+          <button data-testid="button" onClick={() => handleLikeClick()}>
+            like
+          </button>
         </p>
         <p>
           <span className="user-name-blog">{blog.user.name}</span>
