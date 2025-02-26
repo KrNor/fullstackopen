@@ -19,6 +19,23 @@ const asObject = (anecdote) => {
 
 const initialState = anecdotesAtStart.map(asObject);
 
+export const createAnecdote = (content) => {
+  return {
+    type: "create_new_anecdote",
+    payload: {
+      content: content,
+    },
+  };
+};
+export const voteforAnecdote = (id) => {
+  return {
+    type: "vote",
+    payload: {
+      id: id,
+    },
+  };
+};
+
 const reducer = (state = initialState, action) => {
   // console.log("state now: ", state);
   // console.log("action", action);
@@ -39,7 +56,6 @@ const reducer = (state = initialState, action) => {
       const newAnecdot = asObject(action.payload.content);
       return state.concat(newAnecdot);
     }
-
     default:
       return state;
   }
