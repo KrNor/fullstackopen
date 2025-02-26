@@ -35,6 +35,10 @@ const reducer = (state = initialState, action) => {
       });
       return newMap;
     }
+    case "create_new_anecdote": {
+      const newAnecdot = asObject(action.payload.content);
+      return state.concat(newAnecdot);
+    }
 
     default:
       return state;
