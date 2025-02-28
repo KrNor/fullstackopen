@@ -1,3 +1,4 @@
+import { createSlice, current } from "@reduxjs/toolkit";
 const anecdotesAtStart = [
   "If it hurts, do it more often",
   "Adding manpower to a late software project makes it later!",
@@ -19,49 +20,38 @@ const asObject = (anecdote) => {
 
 const initialState = anecdotesAtStart.map(asObject);
 
-const generateId = () => Number((Math.random() * 1000000).toFixed(0));
-
-export const createAnecdote = (content) => {
-  return {
-    type: "create_new_anecdote",
-    payload: {
-      content: content,
-      id: generateId(),
-    },
-  };
-};
-export const voteforAnecdote = (id) => {
-  return {
-    type: "vote",
-    payload: {
-      id: id,
-    },
-  };
-};
-
-const anecdoteReducer = (state = initialState, action) => {
-  // console.log("state now: ", state);
-  // console.log("action", action);
-  switch (action.type) {
-    case "vote": {
-      const id = action.payload.id;
-      const AnecdoteToUpvote = state.find((n) => n.id === id);
+const anecdoteSlice = createSlice({
+  name: "anecdotes",
+  initialState,
+  reducers: {
+    voteforAnecdote(state, action) {
+      const id = action.payload;
+      // console.log(action.payload);
+      // console.log(current(state));
+      const AnecdoteToUpvote = state.find((n) => {
+        // console.log(current(n));
+        return n.id === id;
+      });
+      // console.log(AnecdoteToUpvote);
       const newAnecdote = {
         ...AnecdoteToUpvote,
         votes: AnecdoteToUpvote.votes + 1,
       };
+      // console.log(state);
       const newMap = state.map((anecdote) => {
         return anecdote.id === id ? newAnecdote : anecdote;
       });
       return newMap;
-    }
-    case "create_new_anecdote": {
-      const newAnecdot = asObject(action.payload.content);
-      return state.concat(newAnecdot);
-    }
-    default:
-      return state;
-  }
-};
+    },
+    createAnecdote(state, action) {
+      // console.log(action.payload);
+      console.log(current(state));
+      const newAnecdot = asObject(action.payload);
+      // console.log(current(state));
+      state.push(newAnecdot);
+    },
+  },
+});
 
-export default anecdoteReducer;
+export const { voteforAnecdote, createAnecdote } = anecdoteSlice.actions;
+export default anecdoteSlice.reducer;

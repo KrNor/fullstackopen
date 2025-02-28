@@ -35,10 +35,9 @@ const AnecdoteList = () => {
     }
     return state.anecdotes;
   });
-
   return (
     <div>
-      {anecdotes
+      {[...anecdotes]
         .sort((a, b) => b.votes - a.votes)
         .map((anecdote) => (
           <Anecdote key={anecdote.id} anecdote={anecdote} />
