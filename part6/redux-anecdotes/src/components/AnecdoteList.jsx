@@ -1,19 +1,29 @@
 /* eslint-disable react/prop-types */
 import { useSelector, useDispatch } from "react-redux";
 import { voteforAnecdote } from "../reducers/anecdoteReducer";
+import {
+  handleVoteNotification,
+  handleNotificationClear,
+} from "../reducers/notificationReducer";
 
 const Anecdote = ({ anecdote }) => {
   const dispatch = useDispatch();
   // console.log(anecdote);
-  const voteAnecdote = (id) => {
-    dispatch(voteforAnecdote(id));
+  const voteAnecdote = (anecdote) => {
+    dispatch(voteforAnecdote(anecdote.id));
+    dispatch(handleVoteNotification(anecdote));
+    // console.log("before");
+    setTimeout(function () {
+      // console.log("aafter");
+      dispatch(handleNotificationClear(""));
+    }, 5000);
   };
   return (
     <div>
       <div>{anecdote.content}</div>
       <div>
         has {anecdote.votes}
-        <button onClick={() => voteAnecdote(anecdote.id)}>vote</button>
+        <button onClick={() => voteAnecdote(anecdote)}>vote</button>
       </div>
     </div>
   );

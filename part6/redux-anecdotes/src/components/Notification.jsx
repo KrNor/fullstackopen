@@ -4,8 +4,9 @@ const Notification = () => {
     return state.notification;
   });
   const style = {
+    visibility: notification.length < 1 ? "hidden" : "visible",
     border: "solid",
-    padding: 10,
+    padding: notification.length < 1 ? 0 : 10,
     borderWidth: 1,
   };
   return <div style={style}>{notification} </div>;
