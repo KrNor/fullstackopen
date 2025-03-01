@@ -1,9 +1,6 @@
 import { createAnecdote } from "../reducers/anecdoteReducer";
 import { useDispatch } from "react-redux";
-import {
-  handleCreationNotification,
-  handleNotificationClear,
-} from "../reducers/notificationReducer";
+import { setNotification } from "../reducers/notificationReducer";
 
 const AnecdoteForm = () => {
   const dispatch = useDispatch();
@@ -13,17 +10,9 @@ const AnecdoteForm = () => {
     const content = event.target.newanecdote.value;
     event.target.newanecdote.value = "";
 
-    // const anecdoteObject = await anecdoteService.createNew(content);
-    // console.log(anecdoteObject);
-    // dispatch(createAnecdote(anecdoteObject));
     dispatch(createAnecdote(content));
-
-    dispatch(handleCreationNotification(content));
-    // console.log("before");
-    setTimeout(function () {
-      // console.log("after");
-      dispatch(handleNotificationClear(""));
-    }, 5000);
+    dispatch(setNotification(`the anecdote:"${content}" was created!`, 5));
+    // dispatch(setNotification(content));
   };
   return (
     <div>

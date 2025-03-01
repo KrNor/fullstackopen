@@ -1,24 +1,13 @@
 /* eslint-disable react/prop-types */
 import { useSelector, useDispatch } from "react-redux";
 import { upvoteAnecdote } from "../reducers/anecdoteReducer";
-import {
-  handleVoteNotification,
-  handleNotificationClear,
-} from "../reducers/notificationReducer";
+import { setNotification } from "../reducers/notificationReducer";
 
 const Anecdote = ({ anecdote }) => {
   const dispatch = useDispatch();
-  // console.log(anecdote);
-  const voteAnecdote = (anecdote) => {
-    console.log(anecdote);
-    console.log(anecdote.anecdote);
+  const voteAnecdote = async (anecdote) => {
     dispatch(upvoteAnecdote(anecdote));
-    dispatch(handleVoteNotification(anecdote));
-    // console.log("before");
-    setTimeout(function () {
-      // console.log("aafter");
-      dispatch(handleNotificationClear(""));
-    }, 5000);
+    dispatch(setNotification(`you voted for :"${anecdote.content}"!`, 5));
   };
   return (
     <div>
@@ -32,14 +21,9 @@ const Anecdote = ({ anecdote }) => {
 };
 
 const AnecdoteList = () => {
-  // const dispatch = useDispatch();
   const anecdotes = useSelector((state) => {
-    // console.log(state);
-    // console.log("here", state.filter.length);
     if (state.filter.length >= 1) {
-      // console.log(state);
       return state.anecdotes.filter((anecdote) => {
-        // console.log(anecdote.content.includes(state.filter));
         return anecdote.content
           .toLowerCase()
           .includes(state.filter.toLowerCase());

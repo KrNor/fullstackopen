@@ -8,19 +8,16 @@ const getAll = async () => {
 };
 
 const createNew = async (content) => {
-  console.log(content);
   const returnedObj = await axios.post(baseUrl, { content: content, votes: 0 });
   return returnedObj.data;
 };
 
 const upvoteAnecdote = async (content) => {
-  console.log(content);
   const upvotedAnecdote = {
     content: content.content,
     id: content.id,
     votes: content.votes + 1,
   };
-  console.log(upvotedAnecdote);
 
   const returnedObj = await axios.put(
     baseUrl + `/${content.id}`,
