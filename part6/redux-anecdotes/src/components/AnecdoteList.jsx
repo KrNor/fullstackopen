@@ -1,6 +1,6 @@
 /* eslint-disable react/prop-types */
 import { useSelector, useDispatch } from "react-redux";
-import { voteforAnecdote } from "../reducers/anecdoteReducer";
+import { upvoteAnecdote } from "../reducers/anecdoteReducer";
 import {
   handleVoteNotification,
   handleNotificationClear,
@@ -10,7 +10,9 @@ const Anecdote = ({ anecdote }) => {
   const dispatch = useDispatch();
   // console.log(anecdote);
   const voteAnecdote = (anecdote) => {
-    dispatch(voteforAnecdote(anecdote.id));
+    console.log(anecdote);
+    console.log(anecdote.anecdote);
+    dispatch(upvoteAnecdote(anecdote));
     dispatch(handleVoteNotification(anecdote));
     // console.log("before");
     setTimeout(function () {
