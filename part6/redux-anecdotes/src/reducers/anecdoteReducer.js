@@ -8,15 +8,15 @@ import { createSlice, current } from "@reduxjs/toolkit";
 //   "Debugging is twice as hard as writing the code in the first place. Therefore, if you write the code as cleverly as possible, you are, by definition, not smart enough to debug it.",
 // ];
 
-const getId = () => (100000 * Math.random()).toFixed(0);
+// const getId = () => (100000 * Math.random()).toFixed(0);
 
-const asObject = (anecdote) => {
-  return {
-    content: anecdote,
-    id: getId(),
-    votes: 0,
-  };
-};
+// const asObject = (anecdote) => {
+//   return {
+//     content: anecdote,
+//     id: getId(),
+//     votes: 0,
+//   };
+// };
 
 // const initialState = anecdotesAtStart.map(asObject);
 
@@ -46,9 +46,10 @@ const anecdoteSlice = createSlice({
     createAnecdote(state, action) {
       // console.log(action.payload);
       console.log(current(state));
-      const newAnecdot = asObject(action.payload);
+      console.log(action);
+      // const newAnecdot = asObject(action.payload);
       // console.log(current(state));
-      state.push(newAnecdot);
+      state.push(action.payload);
     },
     setAnecdotes(state, action) {
       return action.payload;
