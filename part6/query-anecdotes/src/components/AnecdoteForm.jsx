@@ -10,21 +10,31 @@ const AnecdoteForm = () => {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["anecdotes"] });
     },
-    onError: () => {
-      dispatch({
-        type: "SHOW",
-        content: `There was an error with the creation of the anecdote, make sure it is 5 or more letters!`,
-      });
-    },
+    // ,
+    // onError: () => {
+    //   dispatch({
+    //     type: "SHOW",
+    //     content: `There was an error with the creation of the anecdote, make sure it is 5 or more letters!`,
+    //   });
+    // },
   });
   const onCreate = async (event) => {
     event.preventDefault();
     const content = event.target.anecdote.value;
     event.target.anecdote.value = "";
-    newAnecdoteMutation.mutate({
-      content,
-      votes: 0,
-    });
+    newAnecdoteMutation.mutate(
+      {
+        content,
+        votes: 0,
+      },
+      {
+        onError: () =>
+          dispatch({
+            type: "SHOW",
+            content: `There was an error with the creation of the anecdote, make sure it is 5 or more letters!`,
+          }),
+      }
+    );
     if (content.length > 4) {
       dispatch({
         type: "SHOW",
