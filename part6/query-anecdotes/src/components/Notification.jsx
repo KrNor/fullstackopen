@@ -10,7 +10,6 @@ const Notification = () => {
     borderWidth: 1,
     marginBottom: 5,
   };
-  console.log(notification);
   if (notification.length < 1) return null;
 
   return <div style={style}>{notification}</div>;

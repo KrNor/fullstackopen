@@ -20,7 +20,7 @@ const App = () => {
   });
   const handleVote = (anecdote) => {
     upvoteAnecdoteMutation.mutate(anecdote);
-    console.log(anecdote.content);
+    // console.log(anecdote.content);
     dispatch({
       type: "SHOW",
       content: `The anecdote "${anecdote.content}" was upvoted!`,
@@ -37,7 +37,7 @@ const App = () => {
     queryFn: getAnecdotes,
     retry: 3,
   });
-  console.log(JSON.parse(JSON.stringify(result)));
+  // console.log(JSON.parse(JSON.stringify(result)));
 
   if (result.isLoading || (!result.isLoading && result.isError)) {
     return (

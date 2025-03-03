@@ -3,9 +3,9 @@ import { createContext, useReducer, useContext } from "react";
 const notificationReducer = (state, action) => {
   switch (action.type) {
     case "SHOW": {
-      console.log(state);
-      console.log(action.content);
-      console.log("CALLING FOR STATE");
+      //   console.log(state);
+      //   console.log(action.content);
+      //   console.log("CALLING FOR STATE");
       return action.content;
     }
     case "HIDE": {
