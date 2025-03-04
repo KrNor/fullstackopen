@@ -1,5 +1,14 @@
 import { useState } from "react";
-import { BrowserRouter as Router, Routes, Route, Link } from "react-router-dom";
+import {
+  BrowserRouter as Router,
+  Routes,
+  Route,
+  Link,
+  Navigate,
+  useParams,
+  useNavigate,
+  useMatch,
+} from "react-router-dom";
 
 const Menu = () => {
   const padding = {
@@ -20,12 +29,37 @@ const Menu = () => {
   );
 };
 
+const Anecdote = ({ anecdotes }) => {
+  const id = useParams().id;
+  const anecdote = anecdotes.find((n) => n.id === Number(id));
+  //   {
+  //   content: "If it hurts, do it more often",
+  //   author: "Jez Humble",
+  //   info: "https://martinfowler.com/bliki/FrequencyReducesDifficulty.html",
+  //   votes: 0,
+  //   id: 1,
+  // },
+  return (
+    <div>
+      <h2>{anecdote.content}</h2>
+      <p>was made by: {anecdote.author}</p>
+      <p>has : {anecdote.author} likes!</p>
+      <h4>
+        for more information visit the website:{" "}
+        <a href={anecdote.info}>{anecdote.info}</a>{" "}
+      </h4>
+    </div>
+  );
+};
+
 const AnecdoteList = ({ anecdotes }) => (
   <div>
     <h2>Anecdotes</h2>
     <ul>
       {anecdotes.map((anecdote) => (
-        <li key={anecdote.id}>{anecdote.content}</li>
+        <li key={anecdote.id}>
+          <Link to={`/anecdote/${anecdote.id}`}>{anecdote.content}</Link>
+        </li>
       ))}
     </ul>
   </div>
@@ -157,6 +191,10 @@ const App = () => {
         <h1>Software anecdotes</h1>
         <Menu />
         <Routes>
+          <Route
+            path="/anecdote/:id"
+            element={<Anecdote anecdotes={anecdotes} />}
+          />
           <Route path="/" element={<AnecdoteList anecdotes={anecdotes} />} />
           <Route path="/about" element={<About />} />
           <Route path="/create" element={<CreateNew addNew={addNew} />} />
