@@ -9,6 +9,7 @@ import {
   useNavigate,
   useMatch,
 } from "react-router-dom";
+import { useField } from "./hooks/index";
 
 const Menu = () => {
   const padding = {
@@ -99,21 +100,21 @@ const Footer = () => (
 );
 
 const CreateNew = (props) => {
-  const [content, setContent] = useState("");
-  const [author, setAuthor] = useState("");
-  const [info, setInfo] = useState("");
+  const content = useField("content");
+  const author = useField("author");
+  const info = useField("info");
   const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     props.addNew({
-      content,
-      author,
-      info,
+      content: content.value,
+      author: author.value,
+      info: info.value,
       votes: 0,
     });
     navigate("/");
-    props.setNotification(`The new anecdote: "${content}" was added!`);
+    props.setNotification(`The new anecdote: "${content.value}" was added!`);
     setTimeout(() => {
       props.setNotification("");
     }, 5000);
@@ -125,27 +126,15 @@ const CreateNew = (props) => {
       <form onSubmit={handleSubmit}>
         <div>
           content
-          <input
-            name="content"
-            value={content}
-            onChange={(e) => setContent(e.target.value)}
-          />
+          <input {...content} />
         </div>
         <div>
           author
-          <input
-            name="author"
-            value={author}
-            onChange={(e) => setAuthor(e.target.value)}
-          />
+          <input {...author} />
         </div>
         <div>
           url for more info
-          <input
-            name="info"
-            value={info}
-            onChange={(e) => setInfo(e.target.value)}
-          />
+          <input {...info} />
         </div>
         <button>create</button>
       </form>
@@ -172,6 +161,7 @@ const App = () => {
   ]);
 
   const [notification, setNotification] = useState("");
+  const username = useField("text");
 
   const addNew = (anecdote) => {
     anecdote.id = Math.round(Math.random() * 10000);
