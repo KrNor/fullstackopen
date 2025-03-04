@@ -43,7 +43,7 @@ const Anecdote = ({ anecdotes }) => {
     <div>
       <h2>{anecdote.content}</h2>
       <p>was made by: {anecdote.author}</p>
-      <p>has : {anecdote.author} likes!</p>
+      <p>has : {anecdote.votes} likes!</p>
       <h4>
         for more information visit the website:{" "}
         <a href={anecdote.info}>{anecdote.info}</a>{" "}
@@ -102,8 +102,9 @@ const CreateNew = (props) => {
   const [content, setContent] = useState("");
   const [author, setAuthor] = useState("");
   const [info, setInfo] = useState("");
+  const navigate = useNavigate();
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     props.addNew({
       content,
@@ -111,6 +112,11 @@ const CreateNew = (props) => {
       info,
       votes: 0,
     });
+    navigate("/");
+    props.setNotification(`The new anecdote: "${content}" was added!`);
+    setTimeout(() => {
+      props.setNotification("");
+    }, 5000);
   };
 
   return (
@@ -190,6 +196,7 @@ const App = () => {
       <Router>
         <h1>Software anecdotes</h1>
         <Menu />
+        <b>{notification}</b>
         <Routes>
           <Route
             path="/anecdote/:id"
@@ -197,7 +204,12 @@ const App = () => {
           />
           <Route path="/" element={<AnecdoteList anecdotes={anecdotes} />} />
           <Route path="/about" element={<About />} />
-          <Route path="/create" element={<CreateNew addNew={addNew} />} />
+          <Route
+            path="/create"
+            element={
+              <CreateNew addNew={addNew} setNotification={setNotification} />
+            }
+          />
         </Routes>
       </Router>
       <Footer />
