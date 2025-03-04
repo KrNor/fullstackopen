@@ -105,6 +105,22 @@ const CreateNew = (props) => {
   const info = useField("info");
   const navigate = useNavigate();
 
+  const handleClear = (event) => {
+    event.preventDefault();
+    content.useClear();
+    author.useClear();
+    info.useClear();
+  };
+
+  const removeClear = (field) => {
+    const noClear = {
+      name: field.name,
+      value: field.value,
+      onChange: field.onChange,
+    };
+    return noClear;
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     props.addNew({
@@ -126,17 +142,18 @@ const CreateNew = (props) => {
       <form onSubmit={handleSubmit}>
         <div>
           content
-          <input {...content} />
+          <input {...removeClear(content)} />
         </div>
         <div>
-          author
-          <input {...author} />
+          f author
+          <input {...removeClear(author)} />
         </div>
         <div>
           url for more info
-          <input {...info} />
+          <input {...removeClear(info)} />
         </div>
         <button>create</button>
+        <button onClick={handleClear}>clear</button>
       </form>
     </div>
   );
