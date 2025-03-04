@@ -7,15 +7,15 @@ const Menu = () => {
   };
   return (
     <div>
-      <a href="#" style={padding}>
+      <Link style={padding} to="/">
         anecdotes
-      </a>
-      <a href="#" style={padding}>
+      </Link>
+      <Link style={padding} to="/create">
         create new
-      </a>
-      <a href="#" style={padding}>
+      </Link>
+      <Link style={padding} to="/about">
         about
-      </a>
+      </Link>
     </div>
   );
 };
@@ -153,14 +153,22 @@ const App = () => {
 
   return (
     <div>
-      <h1>Software anecdotes</h1>
-      <Menu />
-      <AnecdoteList anecdotes={anecdotes} />
-      <About />
-      <CreateNew addNew={addNew} />
+      <Router>
+        <h1>Software anecdotes</h1>
+        <Menu />
+        <Routes>
+          <Route path="/" element={<AnecdoteList anecdotes={anecdotes} />} />
+          <Route path="/about" element={<About />} />
+          <Route path="/create" element={<CreateNew addNew={addNew} />} />
+        </Routes>
+      </Router>
       <Footer />
     </div>
   );
 };
 
 export default App;
+
+// <AnecdoteList path="/" anecdotes={anecdotes} />
+// <About path="/about" />
+// <CreateNew path="/create" addNew={addNew} />
