@@ -1,7 +1,10 @@
 import { useState } from "react";
+import { useDispatch } from "react-redux";
+import { setNotification } from "../reducers/notificationReducer";
 import BlogService from "../services/blogs";
 
-const DeleteButton = ({ blog, errorHandler, afterChangeBlog }) => {
+const DeleteButton = ({ blog, afterChangeBlog }) => {
+  const dispatch = useDispatch();
   const handleBlogDeletion = async () => {
     if (
       window.confirm(
@@ -10,11 +13,13 @@ const DeleteButton = ({ blog, errorHandler, afterChangeBlog }) => {
     ) {
       try {
         await BlogService.deleteBlog(blog.id);
-        errorHandler("the blog was succsessfully deleted!");
+        dispatch(setNotification("the blog was succsessfully deleted!"));
         afterChangeBlog();
         // setVisibility(visibility);
       } catch (error) {
-        errorHandler("there was a problem trying to delete the blog");
+        dispatch(
+          setNotification("there was a problem trying to delete the blog")
+        );
         // setVisibility(visibility);
       }
     }
@@ -30,7 +35,7 @@ const DeleteButton = ({ blog, errorHandler, afterChangeBlog }) => {
   );
 };
 
-const Blog = ({ blog, user, errorHandler, afterChangeBlog }) => {
+const Blog = ({ blog, user, afterChangeBlog }) => {
   const [blogShown, setBlogShown] = useState(false);
   const [likeCount, setLikeCount] = useState(blog.likes);
   const blogStyle = {
@@ -40,6 +45,7 @@ const Blog = ({ blog, user, errorHandler, afterChangeBlog }) => {
     borderWidth: 1,
     marginBottom: 5,
   };
+  const dispatch = useDispatch();
   // const increaseLikeCount =
   const handleLikeClick = async () => {
     try {
@@ -47,8 +53,10 @@ const Blog = ({ blog, user, errorHandler, afterChangeBlog }) => {
       setLikeCount(updatedBlog.likes);
       afterChangeBlog();
     } catch (error) {
-      errorHandler(
-        "don't like your own blogs (or something went wrong, if so try again later)"
+      dispatch(
+        setNotification(
+          "don't like your own blogs (or something went wrong, if so try again later)"
+        )
       );
     }
   };
@@ -103,11 +111,7 @@ const Blog = ({ blog, user, errorHandler, afterChangeBlog }) => {
           hide
         </button>
         <div style={deleteButtonStyle}>
-          <DeleteButton
-            blog={blog}
-            errorHandler={errorHandler}
-            afterChangeBlog={afterChangeBlog}
-          />
+          <DeleteButton blog={blog} afterChangeBlog={afterChangeBlog} />
         </div>
       </div>
     );

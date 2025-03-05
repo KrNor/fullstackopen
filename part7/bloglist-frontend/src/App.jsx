@@ -1,26 +1,31 @@
 import { useState, useEffect, useRef } from "react";
+import { useSelector, useDispatch } from "react-redux";
 import Blog from "./components/Blog";
 import blogService from "./services/blogs";
 import loginService from "./services/login";
 import CreateBlog from "./components/CreateBlog";
 import Togglable from "./components/Togglable";
 import WelcomeBox from "./components/WelcomeBox";
+import { setNotification } from "./reducers/notificationReducer";
 
-const Notification = ({ message }) => {
-  if (message === null) {
+const Notification = ({}) => {
+  const notification = useSelector((state) => {
+    return state.notification;
+  });
+
+  if (notification.length < 1) {
     return null;
   } else {
-    return <div className="error">{message}</div>;
+    return <div className="error">{notification}</div>;
   }
-  // return <div className="error">{message}</div>;
 };
 
 const App = () => {
+  const dispatch = useDispatch();
   const [blogs, setBlogs] = useState([]);
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [user, setUser] = useState(null);
-  const [errorMessage, setErrorMessage] = useState(null);
 
   const [visible, setVisible] = useState(false);
 
@@ -38,13 +43,13 @@ const App = () => {
       blogService.setToken(user.token);
     }
   }, []);
-  const handleError = (message) => {
-    setErrorMessage(message);
-    // console.log(message);
-    setTimeout(() => {
-      setErrorMessage(null);
-    }, 5000);
-  };
+  // const handleError = (message) => {
+  //   setErrorMessage(message);
+  //   // console.log(message);
+  //   setTimeout(() => {
+  //     setErrorMessage(null);
+  //   }, 5000);
+  // };
   const handleLogin = async (event) => {
     try {
       event.preventDefault();
@@ -55,9 +60,9 @@ const App = () => {
       blogService.setToken(user.token);
       setUsername("");
       setPassword("");
-      handleError("login succsessfull!");
+      dispatch(setNotification("login succsessfull!"));
     } catch (error) {
-      handleError("bad login information, please try again");
+      dispatch(setNotification("bad login information, please try again"));
     }
   };
 
@@ -65,18 +70,22 @@ const App = () => {
     event.preventDefault();
     window.localStorage.removeItem("loggedBlogappUser");
     setUser(null);
-    handleError("logout succsessfull");
+    dispatch(setNotification("logout succsessfull"));
   };
   const handleCreateBlog = async (newBlog) => {
     try {
       // console.log(newBlog);
       await blogService.create(newBlog);
-      handleError(
-        `a new blog called: "${newBlog.title}" was added!, it was written by:${newBlog.author}`
+      dispatch(
+        setNotification(
+          `a new blog called: "${newBlog.title}" was added!, it was written by:${newBlog.author}`
+        )
       );
       afterChangeBlog();
     } catch (error) {
-      handleError("there was a problem with creating the blog, try again");
+      dispatch(
+        setNotification("there was a problem with creating the blog, try again")
+      );
     }
   };
   const afterChangeBlog = () => {
@@ -90,7 +99,7 @@ const App = () => {
   if (user === null) {
     return (
       <div>
-        <Notification message={errorMessage} />
+        <Notification />
 
         <h2>Log in to application</h2>
         <form onSubmit={handleLogin} data-testid="login-form">
@@ -121,7 +130,7 @@ const App = () => {
   }
   return (
     <div>
-      <Notification message={errorMessage} />
+      <Notification />
       <h2>The list of blogs!</h2>
 
       <WelcomeBox
@@ -149,7 +158,6 @@ const App = () => {
               key={blog.id}
               blog={blog}
               user={user}
-              errorHandler={handleError}
               afterChangeBlog={afterChangeBlog}
             />
           ))}
