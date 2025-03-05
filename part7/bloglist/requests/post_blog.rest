@@ -1,0 +1,10 @@
+POST http://localhost:3003/api/blogs
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6ImFzZCIsImlkIjoiNjdiOWEzMjg2Mjg1ZWM3ZmEzNzZjMTJhIiwiaWF0IjoxNzQwMjE5MzAyLCJleHAiOjE3NDAyMjI5MDJ9.WsbZSUuz3Fp-np3mT8xkmXvqPb4_r5ifwEGaO42eXHY
+
+{
+    "title":"DELETE",
+    "author":"DELETE",
+    "url":"alanwebsite.asdasdasd",
+    "likes":6
+}
