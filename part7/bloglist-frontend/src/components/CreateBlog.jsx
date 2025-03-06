@@ -25,7 +25,7 @@ const CreateBlog = ({ setVisibility }) => {
           `a new blog called: "${newBlog.title}" was added!, it was written by:${newBlog.author}`
         )
       );
-      await dispatch(initializeBlogs());
+      dispatch(initializeBlogs());
 
       // await Blog.create(newBlog);
       setBlogTitle("");
@@ -34,7 +34,7 @@ const CreateBlog = ({ setVisibility }) => {
       setVisibility(false); // hides after submission
       // console.log("GOOD creation was succsessfull");
     } catch (error) {
-      console.log(error);
+      // console.log(error);
       dispatch(
         setNotification("there was a problem with creating the blog, try again")
       );

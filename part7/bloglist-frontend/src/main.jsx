@@ -3,14 +3,19 @@ import App from "./App";
 import "./index.css";
 import { configureStore } from "@reduxjs/toolkit";
 import { Provider } from "react-redux";
-import notificationReducer from "./reducers/notificationReducer";
-import blogReducer from "./reducers/blogReducer";
+import NotificationReducer from "./reducers/notificationReducer";
+import BlogReducer from "./reducers/blogReducer";
+import UserReducer from "./reducers/userReducer";
 
 const store = configureStore({
-  reducer: { notification: notificationReducer, blogs: blogReducer },
+  reducer: {
+    notification: NotificationReducer,
+    blog: BlogReducer,
+    user: UserReducer,
+  },
 });
 
-console.log(store.getState());
+// console.log(store.getState());
 
 ReactDOM.createRoot(document.getElementById("root")).render(
   <Provider store={store}>

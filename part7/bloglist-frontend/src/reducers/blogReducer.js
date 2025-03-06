@@ -3,7 +3,7 @@ import BlogService from "../services/blogs";
 import axios from "axios";
 
 const blogSlice = createSlice({
-  name: "blogs",
+  name: "blog",
   initialState: [],
   reducers: {
     setBlogs(state, action) {

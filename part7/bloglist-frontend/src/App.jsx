@@ -8,6 +8,14 @@ import Togglable from "./components/Togglable";
 import WelcomeBox from "./components/WelcomeBox";
 import { setNotification } from "./reducers/notificationReducer";
 import { initializeBlogs } from "./reducers/blogReducer";
+import UserReducer, {
+  initializeUser,
+  loginUser,
+  logoutUser,
+} from "./reducers/userReducer";
+
+import _ from "lodash";
+
 const Notification = ({}) => {
   const notification = useSelector((state) => {
     return state.notification;
@@ -22,63 +30,56 @@ const Notification = ({}) => {
 
 const App = () => {
   const dispatch = useDispatch();
-  // const [blogs, setBlogs] = useState([]); // changed
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
-  const [user, setUser] = useState(null);
 
   const [visible, setVisible] = useState(false);
 
   const helloBoxRef = useRef();
+  useEffect(() => {
+    dispatch(initializeUser());
+  }, []);
 
   useEffect(() => {
     dispatch(initializeBlogs());
   }, [visible]);
 
-  const blogs = useSelector((state) => {
-    return state.blogs.payload;
+  // useEffect(() => {
+  //   const loggedUserJSON = window.localStorage.getItem("loggedBlogappUser");
+  //   if (loggedUserJSON) {
+  //     const user = JSON.parse(loggedUserJSON);
+  //     UserReducer.setUser(user);
+  //     BlogService.setToken(user.token);
+  //   }
+  // }, []);
+
+  const blog = useSelector((state) => {
+    return state.blog.payload;
   });
 
-  // useEffect(() => {
-  //   BlogService.getAll().then((blogs) => setBlogs(blogs));
-  // }, [visible]);
+  const user = useSelector((state) => {
+    return state.user;
+  });
 
-  useEffect(() => {
-    const loggedUserJSON = window.localStorage.getItem("loggedBlogappUser");
-    if (loggedUserJSON) {
-      const user = JSON.parse(loggedUserJSON);
-      setUser(user);
-      BlogService.setToken(user.token);
-    }
-  }, []);
-  // const handleError = (message) => {
-  //   setErrorMessage(message);
-  //   // console.log(message);
-  //   setTimeout(() => {
-  //     setErrorMessage(null);
-  //   }, 5000);
-  // };
   const handleLogin = async (event) => {
     try {
       event.preventDefault();
-      const user = await loginService.login({ username, password });
-      // console.log(user);
-      window.localStorage.setItem("loggedBlogappUser", JSON.stringify(user));
-      setUser(user);
-      BlogService.setToken(user.token);
+      await dispatch(loginUser({ username, password }));
       setUsername("");
       setPassword("");
-      dispatch(setNotification("login succsessfull!"));
     } catch (error) {
       dispatch(setNotification("bad login information, please try again"));
     }
   };
 
-  const handleLogout = (event) => {
+  const handleLogout = async (event) => {
     event.preventDefault();
-    window.localStorage.removeItem("loggedBlogappUser");
-    setUser(null);
-    dispatch(setNotification("logout succsessfull"));
+    try {
+      await dispatch(logoutUser());
+      dispatch(setNotification("logout succsessfull"));
+    } catch (error) {
+      dispatch(setNotification("something wrnt wrong with the logout"));
+    }
   };
   const handleCreateBlog = async (newBlog) => {
     try {
@@ -96,16 +97,11 @@ const App = () => {
       );
     }
   };
-  // const afterChangeBlog = () => {
-  //   dispatch(initializeBlogs());
-  //   // BlogService.getAll().then((blogs) => setBlogs(blogs));
-  // };
 
   const makeLocalNicknameBetter = () => {
     helloBoxRef.current.setPersonalNickname();
   };
-
-  if (user === null) {
+  if (_.isEmpty(user)) {
     return (
       <div>
         <Notification />
@@ -136,7 +132,7 @@ const App = () => {
         </form>
       </div>
     );
-  } else if (blogs === undefined) {
+  } else if (blog === undefined) {
     return <div>Loading ...</div>;
   }
   return (
@@ -159,7 +155,7 @@ const App = () => {
         <CreateBlog setVisibility={setVisible} />
       </Togglable>
       <div data-testid="list-of-blog">
-        {[...blogs]
+        {[...blog]
           .sort((a, b) => b.likes - a.likes)
           .map((blog) => (
             <Blog key={blog.id} blog={blog} user={user} />
