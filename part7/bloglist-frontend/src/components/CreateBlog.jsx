@@ -1,20 +1,32 @@
 import { useState } from "react";
 import Blog from "../services/blogs";
+import { createNewBlog, initializeBlogs } from "../reducers/blogReducer";
+import { setNotification } from "../reducers/notificationReducer";
+import { useDispatch } from "react-redux";
 
-const CreateBlog = ({ setVisibility, handleCreateBlog }) => {
+const CreateBlog = ({ setVisibility }) => {
   const [blogTitle, setBlogTitle] = useState("");
   const [blogAuthor, setBlogAuthor] = useState("");
   const [blogUrl, setBlogUrl] = useState("");
+  const dispatch = useDispatch();
 
   const handleCreateInForm = async (event) => {
     event.preventDefault();
+
     try {
       const newBlog = {
         title: blogTitle,
         author: blogAuthor,
         url: blogUrl,
       };
-      await handleCreateBlog(newBlog);
+      await dispatch(createNewBlog(newBlog));
+      dispatch(
+        setNotification(
+          `a new blog called: "${newBlog.title}" was added!, it was written by:${newBlog.author}`
+        )
+      );
+      await dispatch(initializeBlogs());
+
       // await Blog.create(newBlog);
       setBlogTitle("");
       setBlogAuthor("");
@@ -22,7 +34,10 @@ const CreateBlog = ({ setVisibility, handleCreateBlog }) => {
       setVisibility(false); // hides after submission
       // console.log("GOOD creation was succsessfull");
     } catch (error) {
-      // console.log("BAD creation was not succsessfull");
+      console.log(error);
+      dispatch(
+        setNotification("there was a problem with creating the blog, try again")
+      );
     }
   };
   return (
