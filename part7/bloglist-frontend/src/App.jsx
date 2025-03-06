@@ -96,10 +96,10 @@ const App = () => {
       );
     }
   };
-  const afterChangeBlog = () => {
-    dispatch(initializeBlogs());
-    // BlogService.getAll().then((blogs) => setBlogs(blogs));
-  };
+  // const afterChangeBlog = () => {
+  //   dispatch(initializeBlogs());
+  //   // BlogService.getAll().then((blogs) => setBlogs(blogs));
+  // };
 
   const makeLocalNicknameBetter = () => {
     helloBoxRef.current.setPersonalNickname();
@@ -162,12 +162,7 @@ const App = () => {
         {[...blogs]
           .sort((a, b) => b.likes - a.likes)
           .map((blog) => (
-            <Blog
-              key={blog.id}
-              blog={blog}
-              user={user}
-              afterChangeBlog={afterChangeBlog}
-            />
+            <Blog key={blog.id} blog={blog} user={user} />
           ))}
       </div>
     </div>

@@ -1,9 +1,10 @@
 import { useState } from "react";
 import { useDispatch } from "react-redux";
 import { setNotification } from "../reducers/notificationReducer";
+import { initializeBlogs } from "../reducers/blogReducer";
 import BlogService from "../services/blogs";
 
-const DeleteButton = ({ blog, afterChangeBlog }) => {
+const DeleteButton = ({ blog }) => {
   const dispatch = useDispatch();
   const handleBlogDeletion = async () => {
     if (
@@ -14,7 +15,7 @@ const DeleteButton = ({ blog, afterChangeBlog }) => {
       try {
         await BlogService.deleteBlog(blog.id);
         dispatch(setNotification("the blog was succsessfully deleted!"));
-        afterChangeBlog();
+        dispatch(initializeBlogs());
         // setVisibility(visibility);
       } catch (error) {
         dispatch(
@@ -35,7 +36,7 @@ const DeleteButton = ({ blog, afterChangeBlog }) => {
   );
 };
 
-const Blog = ({ blog, user, afterChangeBlog }) => {
+const Blog = ({ blog, user }) => {
   const [blogShown, setBlogShown] = useState(false);
   const [likeCount, setLikeCount] = useState(blog.likes);
   const blogStyle = {
@@ -51,7 +52,7 @@ const Blog = ({ blog, user, afterChangeBlog }) => {
     try {
       const updatedBlog = await BlogService.likeBlog(blog);
       setLikeCount(updatedBlog.likes);
-      afterChangeBlog();
+      dispatch(initializeBlogs());
     } catch (error) {
       dispatch(
         setNotification(
@@ -111,7 +112,7 @@ const Blog = ({ blog, user, afterChangeBlog }) => {
           hide
         </button>
         <div style={deleteButtonStyle}>
-          <DeleteButton blog={blog} afterChangeBlog={afterChangeBlog} />
+          <DeleteButton blog={blog} />
         </div>
       </div>
     );
