@@ -28,15 +28,26 @@ export const initializeUser = () => {
     // const loggedUserJSON = window.localStorage.getItem("loggedBlogappUser");
     // console.log(state.user);
     // dispatch(setUser(state.user));
+
     const user = await dispatch(getUser());
-    if (_.isEmpty(user)) {
+
+    const loggedUserJSON = window.localStorage.getItem("loggedBlogappUser");
+    console.log(loggedUserJSON);
+    if (loggedUserJSON) {
+      const user = JSON.parse(loggedUserJSON);
+      dispatch(setUser(user));
+      BlogService.setToken(user.token);
+    }
+
+    if (_.isEmpty(loggedUserJSON)) {
       return {};
     }
 
-    BlogService.setToken(user.token);
+    // BlogService.setToken(user.token);
 
     // console.log("this is the user");
     // console.log(user);
+    console.log(user.payload);
     return user.payload;
   };
 };
@@ -48,6 +59,7 @@ export const loginUser = (content) => {
       dispatch(setUser(user));
       //   console.log("this is the user");
       //   console.log(user);
+      window.localStorage.setItem("loggedBlogappUser", JSON.stringify(user));
       BlogService.setToken(user.token);
       dispatch(setNotification("Welcome to the application!"));
     } catch (error) {
@@ -59,6 +71,7 @@ export const loginUser = (content) => {
 
 export const logoutUser = () => {
   return async (dispatch) => {
+    window.localStorage.removeItem("loggedBlogappUser");
     dispatch(setUser({}));
   };
 };

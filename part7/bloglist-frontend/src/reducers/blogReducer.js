@@ -19,7 +19,7 @@ export const { setBlogs, appendBlog } = blogSlice.actions;
 
 export const initializeBlogs = () => {
   return async (dispatch) => {
-    const blogs = await BlogService.getAll().then((blogs) => setBlogs(blogs));
+    const blogs = await BlogService.getAll().then((blogs) => setBlogs(blogs)); //wtf, need to fix after done with users
     dispatch(setBlogs(blogs));
   };
 };

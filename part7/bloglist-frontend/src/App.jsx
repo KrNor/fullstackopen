@@ -6,14 +6,17 @@ import loginService from "./services/login";
 import CreateBlog from "./components/CreateBlog";
 import Togglable from "./components/Togglable";
 import WelcomeBox from "./components/WelcomeBox";
+import Users from "./components/Users";
 import { setNotification } from "./reducers/notificationReducer";
 import { initializeBlogs } from "./reducers/blogReducer";
+import { initializeUsers } from "./reducers/usersReducer";
 import UserReducer, {
   initializeUser,
   loginUser,
   logoutUser,
 } from "./reducers/userReducer";
 
+import { BrowserRouter as Router, Routes, Route, Link } from "react-router-dom";
 import _ from "lodash";
 
 const Notification = ({}) => {
@@ -36,10 +39,14 @@ const App = () => {
   const [visible, setVisible] = useState(false);
 
   const helloBoxRef = useRef();
+
   useEffect(() => {
     dispatch(initializeUser());
   }, []);
 
+  useEffect(() => {
+    dispatch(initializeUsers());
+  }, []);
   useEffect(() => {
     dispatch(initializeBlogs());
   }, [visible]);
@@ -136,31 +143,45 @@ const App = () => {
     return <div>Loading ...</div>;
   }
   return (
-    <div>
-      <Notification />
-      <h2>The list of blogs!</h2>
+    <div className="container">
+      <Router>
+        <WelcomeBox
+          buttonLabel="WelcomeBox"
+          ref={helloBoxRef}
+          user={user}
+          handleLogout={handleLogout}
+        />
 
-      <WelcomeBox
-        buttonLabel="WelcomeBox"
-        ref={helloBoxRef}
-        user={user}
-        handleLogout={handleLogout}
-      />
-      <button onClick={makeLocalNicknameBetter}>make my nickname better</button>
-      <Togglable
-        buttonLabel="create new blog"
-        setVisibility={setVisible}
-        visibility={visible}
-      >
-        <CreateBlog setVisibility={setVisible} />
-      </Togglable>
-      <div data-testid="list-of-blog">
-        {[...blog]
-          .sort((a, b) => b.likes - a.likes)
-          .map((blog) => (
-            <Blog key={blog.id} blog={blog} user={user} />
-          ))}
-      </div>
+        <Routes>
+          <Route
+            path="/"
+            element={
+              <div>
+                <h2>The list of blogs!</h2>
+                <Notification />
+                <button onClick={makeLocalNicknameBetter}>
+                  make my nickname better
+                </button>
+                <Togglable
+                  buttonLabel="create new blog"
+                  setVisibility={setVisible}
+                  visibility={visible}
+                >
+                  <CreateBlog setVisibility={setVisible} />
+                </Togglable>
+                <div data-testid="list-of-blog">
+                  {[...blog]
+                    .sort((a, b) => b.likes - a.likes)
+                    .map((blog) => (
+                      <Blog key={blog.id} blog={blog} user={user} />
+                    ))}
+                </div>
+              </div>
+            }
+          />
+          <Route path="/users" element={<Users />} />
+        </Routes>
+      </Router>
     </div>
   );
 };
