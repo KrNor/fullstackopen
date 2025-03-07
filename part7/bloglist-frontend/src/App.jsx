@@ -61,7 +61,7 @@ const App = () => {
   // }, []);
 
   const blog = useSelector((state) => {
-    return state.blog.payload;
+    return state.blog;
   });
 
   const user = useSelector((state) => {

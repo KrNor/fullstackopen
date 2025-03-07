@@ -1,11 +1,15 @@
 import { Table } from "react-bootstrap";
 import UserService from "../services/users";
 import { useDispatch, useSelector } from "react-redux";
+import _ from "lodash";
 
 const Users = (props) => {
   const users = useSelector((state) => {
     return state.users;
   });
+  if (_.isEmpty(users)) {
+    return <div>Loading users...</div>;
+  }
 
   return (
     <div>
