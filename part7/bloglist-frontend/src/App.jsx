@@ -7,6 +7,7 @@ import CreateBlog from "./components/CreateBlog";
 import Togglable from "./components/Togglable";
 import WelcomeBox from "./components/WelcomeBox";
 import Users from "./components/Users";
+import User from "./components/User";
 import { setNotification } from "./reducers/notificationReducer";
 import { initializeBlogs } from "./reducers/blogReducer";
 import { initializeUsers } from "./reducers/usersReducer";
@@ -16,7 +17,13 @@ import UserReducer, {
   logoutUser,
 } from "./reducers/userReducer";
 
-import { BrowserRouter as Router, Routes, Route, Link } from "react-router-dom";
+import {
+  BrowserRouter as Router,
+  Routes,
+  Route,
+  Link,
+  useMatch,
+} from "react-router-dom";
 import _ from "lodash";
 
 const Notification = ({}) => {
@@ -108,6 +115,13 @@ const App = () => {
   const makeLocalNicknameBetter = () => {
     helloBoxRef.current.setPersonalNickname();
   };
+
+  // userProfile = { userProfile };
+  // const userProfileMatch = useMatch("/users/:id");
+  // const userProfile = userProfileMatch
+  //   ? user.find((userr) => userr.id === Number(userProfileMatch.params.id))
+  //   : null;
+
   if (_.isEmpty(user)) {
     return (
       <div>
@@ -142,6 +156,7 @@ const App = () => {
   } else if (blog === undefined) {
     return <div>Loading ...</div>;
   }
+
   return (
     <div className="container">
       <Router>
@@ -153,6 +168,8 @@ const App = () => {
         />
 
         <Routes>
+          <Route path="/users/:id" element={<User />} />
+          <Route path="/users" element={<Users />} />
           <Route
             path="/"
             element={
@@ -179,7 +196,6 @@ const App = () => {
               </div>
             }
           />
-          <Route path="/users" element={<Users />} />
         </Routes>
       </Router>
     </div>

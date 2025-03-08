@@ -2,6 +2,7 @@ import { Table } from "react-bootstrap";
 import UserService from "../services/users";
 import { useDispatch, useSelector } from "react-redux";
 import _ from "lodash";
+import { Link } from "react-router-dom";
 
 const Users = (props) => {
   const users = useSelector((state) => {
@@ -25,7 +26,7 @@ const Users = (props) => {
           {users.map((users) => (
             <tr key={users.id}>
               <td>
-                <div>{users.name}</div>
+                <Link to={`/users/${users.id}`}>{users.name}</Link>
               </td>
               <td>{users.blogs.length}</td>
             </tr>
