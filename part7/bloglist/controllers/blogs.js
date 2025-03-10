@@ -2,6 +2,7 @@ const BlogRouter = require("express").Router();
 const Blog = require("../models/blog");
 var ObjectId = require("mongoose").Types.ObjectId;
 const middleware = require("../utils/middleware");
+const _ = require("lodash");
 
 BlogRouter.get("/", async (request, response, next) => {
   const blog = await Blog.find({}).populate("user", {
@@ -18,7 +19,8 @@ BlogRouter.get("/:id", async (request, response, next) => {
       name: 1,
       username: 1,
     });
-    if (blog) {
+    if (!_.isEmpty(blog)) {
+      console.log(blog);
       return response.status(200).json(blog);
     } else {
       return response.status(404).json({ error: "blog was not found" });
@@ -28,12 +30,13 @@ BlogRouter.get("/:id", async (request, response, next) => {
 });
 
 BlogRouter.post("/:id/comments", async (request, response, next) => {
-  const body = request.body;
+  const { comment } = request.body;
   if (ObjectId.isValid(request.params.id)) {
     const blog = await Blog.findById(request.params.id);
-    // console.log(blog);
-    if (blog) {
-      blog.comments.push(body.comment);
+    // console.log(comment);
+    if (!_.isEmpty(blog)) {
+      // console.log(comment);
+      blog.comments.push(comment);
       await blog.save();
 
       return response.status(200).json(blog.comments);
