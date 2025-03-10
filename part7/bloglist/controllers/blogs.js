@@ -27,6 +27,22 @@ BlogRouter.get("/:id", async (request, response, next) => {
   return response.status(404).json({ error: "invalid request" });
 });
 
+BlogRouter.post("/:id/comments", async (request, response, next) => {
+  const body = request.body;
+  if (ObjectId.isValid(request.params.id)) {
+    const blog = await Blog.findById(request.params.id);
+    // console.log(blog);
+    if (blog) {
+      blog.comments.push(body.comment);
+      await blog.save();
+
+      return response.status(200).json(blog.comments);
+    } else {
+      return response.status(404).json({ error: "blog was not found" });
+    }
+  }
+});
+
 BlogRouter.post(
   "/",
   middleware.userExtractor,
@@ -40,6 +56,7 @@ BlogRouter.post(
       url: body.url,
       likes: body.likes,
       user: user.id,
+      comments: [],
     });
     let ress = await blog.save();
     user.blogs.push(ress.id);
@@ -106,6 +123,7 @@ BlogRouter.put(
           author: body.author,
           url: body.url,
           likes: body.likes,
+          comments: body.comments,
         },
         {
           new: true,
