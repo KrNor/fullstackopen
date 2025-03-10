@@ -10,7 +10,13 @@ import { setNotification } from "./reducers/notificationReducer";
 import { initializeBlogs } from "./reducers/blogReducer";
 import { initializeUsers } from "./reducers/usersReducer";
 import { initializeUser, loginUser, logoutUser } from "./reducers/userReducer";
-import { BrowserRouter as Router, Routes, Route, Link } from "react-router-dom";
+import {
+  BrowserRouter as Router,
+  Routes,
+  Route,
+  Link,
+  Navigate,
+} from "react-router-dom";
 import _ from "lodash";
 import { Table } from "react-bootstrap";
 
@@ -137,6 +143,7 @@ const App = () => {
         <Routes>
           <Route path="/users/:id" element={<User />} />
           <Route path="/users" element={<Users />} />
+          <Route path="/blogs/" element={<Navigate replace to="/" />} />
           <Route path="/blogs/:id" element={<Blogs />} />
           <Route
             path="/"

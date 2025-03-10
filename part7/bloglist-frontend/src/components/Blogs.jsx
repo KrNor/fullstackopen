@@ -44,6 +44,7 @@ export const DeleteButton = ({ blog }) => {
 const Blogs = () => {
   const dispatch = useDispatch();
   const [blogToShow, setBlogToShow] = useState({});
+  // const [commentIds, setCommentIds] = useState(1);
   const id = useParams().id;
 
   const user = useSelector((state) => {
@@ -63,6 +64,13 @@ const Blogs = () => {
   if (_.isEmpty(blogToShow)) {
     return <div>Loading blog...</div>;
   }
+
+  // const handleCommentIds = async () => {
+  //   console.log(commentIds);
+  //   const tempid = commentIds;
+  //   await setCommentIds(tempid + 1);
+  //   return tempid + 1;
+  // };
 
   const handleLikeClick = async () => {
     try {
@@ -102,6 +110,16 @@ const Blogs = () => {
       <div>this blog was added by: {blogToShow.author}</div>
       <div style={deleteButtonStyle}>
         <DeleteButton blog={blogToShow} />
+      </div>
+      <div>
+        <ul>
+          comments:
+          {blogToShow.comments.map((comment) => {
+            return (
+              <li key={Math.floor(Math.random() * 10000000) + 1}>{comment}</li>
+            );
+          })}
+        </ul>
       </div>
     </div>
   );
