@@ -1,4 +1,5 @@
 import ReactDOM from "react-dom/client";
+import "bootswatch/dist/morph/bootstrap.min.css";
 import App from "./App";
 import "./index.css";
 import { configureStore } from "@reduxjs/toolkit";
@@ -16,8 +17,6 @@ const store = configureStore({
     users: UsersReducer,
   },
 });
-
-// console.log(store.getState());
 
 ReactDOM.createRoot(document.getElementById("root")).render(
   <Provider store={store}>

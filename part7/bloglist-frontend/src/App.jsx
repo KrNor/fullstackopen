@@ -18,7 +18,7 @@ import {
   Navigate,
 } from "react-router-dom";
 import _ from "lodash";
-import { Table } from "react-bootstrap";
+import { Table, Navbar, Container } from "react-bootstrap";
 
 const Notification = ({}) => {
   const notification = useSelector((state) => {
@@ -128,16 +128,19 @@ const App = () => {
   return (
     <Router>
       <div className="container">
-        <div style={navigationStyle}>
-          <Link to="/">home </Link>
-          <Link to="/">blogs </Link>
-          <Link to="/users">users </Link>
-          <WelcomeBox
-            buttonLabel="WelcomeBox"
-            user={user}
-            handleLogout={handleLogout}
-          />
-        </div>
+        <Navbar>
+          <Container>
+            <Link to="/">home </Link>
+            <Link to="/">blogs </Link>
+            <Link to="/users">users </Link>
+            <Navbar.Brand href="/">refresh into home</Navbar.Brand>
+            <WelcomeBox
+              buttonLabel="WelcomeBox"
+              user={user}
+              handleLogout={handleLogout}
+            />
+          </Container>
+        </Navbar>
 
         <Notification />
         <Routes>

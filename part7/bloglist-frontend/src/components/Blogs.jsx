@@ -6,6 +6,7 @@ import { useParams, useNavigate } from "react-router-dom";
 import { useState, useEffect } from "react";
 import { setNotification } from "../reducers/notificationReducer";
 import { initializeBlogs, likeBlog } from "../reducers/blogReducer";
+import { ListGroup } from "react-bootstrap";
 
 export const DeleteButton = ({ blog }) => {
   const dispatch = useDispatch();
@@ -131,12 +132,15 @@ const Blogs = () => {
               <button type="submit"> send</button>
             </form>
           </div>
-
-          {blogToShow.comments.map((comment) => {
-            return (
-              <li key={Math.floor(Math.random() * 10000000) + 1}>{comment}</li>
-            );
-          })}
+          <ListGroup>
+            {blogToShow.comments.map((comment) => {
+              return (
+                <ListGroup.Item key={Math.floor(Math.random() * 10000000) + 1}>
+                  {comment}
+                </ListGroup.Item>
+              );
+            })}
+          </ListGroup>
         </ul>
       </div>
     </div>

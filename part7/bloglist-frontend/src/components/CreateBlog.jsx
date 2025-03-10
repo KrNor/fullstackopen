@@ -3,6 +3,8 @@ import Blog from "../services/blogs";
 import { createNewBlog, initializeBlogs } from "../reducers/blogReducer";
 import { setNotification } from "../reducers/notificationReducer";
 import { useDispatch } from "react-redux";
+import Button from "react-bootstrap/Button";
+import Form from "react-bootstrap/Form";
 
 const CreateBlog = ({ setVisibility }) => {
   const [blogTitle, setBlogTitle] = useState("");
@@ -42,50 +44,51 @@ const CreateBlog = ({ setVisibility }) => {
   };
   return (
     <div>
-      <form onSubmit={handleCreateInForm} className="form-createblog">
+      <Form onSubmit={handleCreateInForm}>
         <div>
-          <p>
-            title:{" "}
-            <input
+          <Form.Group>
+            <Form.Label>Title:</Form.Label>
+            <Form.Control
               data-testid="title-blog"
               id="title-input"
               type="text"
               value={blogTitle}
               name="title"
               onChange={({ target }) => setBlogTitle(target.value)}
-            ></input>
-          </p>
-          <p>
-            author:{" "}
-            <input
+            ></Form.Control>
+          </Form.Group>
+
+          <Form.Group>
+            <Form.Label>Author:</Form.Label>
+            <Form.Control
               data-testid="author-blog"
               id="author-input"
               type="text"
               value={blogAuthor}
               name="author"
               onChange={({ target }) => setBlogAuthor(target.value)}
-            ></input>
-          </p>
-          <p>
-            url:{" "}
-            <input
+            ></Form.Control>
+          </Form.Group>
+          <Form.Group>
+            <Form.Label>URL:</Form.Label>
+            <Form.Control
               data-testid="url-blog"
               id="url-input"
               type="text"
               value={blogUrl}
               name="url"
               onChange={({ target }) => setBlogUrl(target.value)}
-            ></input>
-          </p>
-          <button
+            ></Form.Control>
+          </Form.Group>
+          <Button
             type="submit"
             id="create-button-input"
             data-testid="submit-button-blog"
           >
             create
-          </button>
+          </Button>
         </div>
-      </form>
+      </Form>
     </div>
   );
 };
