@@ -1,8 +1,6 @@
 import { useState, useEffect, useRef } from "react";
 import { useSelector, useDispatch } from "react-redux";
-import Blog from "./components/Blog";
-import BlogService from "./services/blogs";
-import loginService from "./services/login";
+import Blogs from "./components/Blogs";
 import CreateBlog from "./components/CreateBlog";
 import Togglable from "./components/Togglable";
 import WelcomeBox from "./components/WelcomeBox";
@@ -11,20 +9,10 @@ import User from "./components/User";
 import { setNotification } from "./reducers/notificationReducer";
 import { initializeBlogs } from "./reducers/blogReducer";
 import { initializeUsers } from "./reducers/usersReducer";
-import UserReducer, {
-  initializeUser,
-  loginUser,
-  logoutUser,
-} from "./reducers/userReducer";
-
-import {
-  BrowserRouter as Router,
-  Routes,
-  Route,
-  Link,
-  useMatch,
-} from "react-router-dom";
+import { initializeUser, loginUser, logoutUser } from "./reducers/userReducer";
+import { BrowserRouter as Router, Routes, Route, Link } from "react-router-dom";
 import _ from "lodash";
+import { Table } from "react-bootstrap";
 
 const Notification = ({}) => {
   const notification = useSelector((state) => {
@@ -58,15 +46,6 @@ const App = () => {
     dispatch(initializeBlogs());
   }, [visible]);
 
-  // useEffect(() => {
-  //   const loggedUserJSON = window.localStorage.getItem("loggedBlogappUser");
-  //   if (loggedUserJSON) {
-  //     const user = JSON.parse(loggedUserJSON);
-  //     UserReducer.setUser(user);
-  //     BlogService.setToken(user.token);
-  //   }
-  // }, []);
-
   const blog = useSelector((state) => {
     return state.blog;
   });
@@ -95,32 +74,10 @@ const App = () => {
       dispatch(setNotification("something wrnt wrong with the logout"));
     }
   };
-  const handleCreateBlog = async (newBlog) => {
-    try {
-      // console.log(newBlog);
-      await BlogService.create(newBlog);
-      dispatch(
-        setNotification(
-          `a new blog called: "${newBlog.title}" was added!, it was written by:${newBlog.author}`
-        )
-      );
-      dispatch(initializeBlogs());
-    } catch (error) {
-      dispatch(
-        setNotification("there was a problem with creating the blog, try again")
-      );
-    }
-  };
 
   const makeLocalNicknameBetter = () => {
     helloBoxRef.current.setPersonalNickname();
   };
-
-  // userProfile = { userProfile };
-  // const userProfileMatch = useMatch("/users/:id");
-  // const userProfile = userProfileMatch
-  //   ? user.find((userr) => userr.id === Number(userProfileMatch.params.id))
-  //   : null;
 
   if (_.isEmpty(user)) {
     return (
@@ -156,26 +113,33 @@ const App = () => {
   } else if (blog === undefined) {
     return <div>Loading ...</div>;
   }
+  const blogStyle = {
+    paddingTop: 10,
+    paddingLeft: 2,
+    border: "solid",
+    borderWidth: 1,
+    marginBottom: 5,
+  };
 
   return (
-    <div className="container">
-      <Router>
+    <Router>
+      <div className="container">
         <WelcomeBox
           buttonLabel="WelcomeBox"
           ref={helloBoxRef}
           user={user}
           handleLogout={handleLogout}
         />
-
+        <Notification />
         <Routes>
           <Route path="/users/:id" element={<User />} />
           <Route path="/users" element={<Users />} />
+          <Route path="/blogs/:id" element={<Blogs />} />
           <Route
             path="/"
             element={
               <div>
                 <h2>The list of blogs!</h2>
-                <Notification />
                 <button onClick={makeLocalNicknameBetter}>
                   make my nickname better
                 </button>
@@ -186,19 +150,30 @@ const App = () => {
                 >
                   <CreateBlog setVisibility={setVisible} />
                 </Togglable>
-                <div data-testid="list-of-blog">
-                  {[...blog]
-                    .sort((a, b) => b.likes - a.likes)
-                    .map((blog) => (
-                      <Blog key={blog.id} blog={blog} user={user} />
-                    ))}
-                </div>
+                <Table striped>
+                  <tbody>
+                    {[...blog]
+                      .sort((a, b) => b.likes - a.likes)
+                      .map((blog) => (
+                        <tr key={blog.id}>
+                          <td style={blogStyle}>
+                            <Link to={`/blogs/${blog.id}`}>
+                              <div>
+                                "{blog.title}" by {blog.author}
+                              </div>
+                            </Link>
+                          </td>
+                        </tr>
+                      ))}
+                  </tbody>
+                </Table>
+                <div data-testid="list-of-blog"></div>
               </div>
             }
           />
         </Routes>
-      </Router>
-    </div>
+      </div>
+    </Router>
   );
 };
 

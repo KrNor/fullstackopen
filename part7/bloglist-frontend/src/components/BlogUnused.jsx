@@ -4,7 +4,7 @@ import { setNotification } from "../reducers/notificationReducer";
 import { initializeBlogs } from "../reducers/blogReducer";
 import BlogService from "../services/blogs";
 
-const DeleteButton = ({ blog }) => {
+export const DeleteButton = ({ blog }) => {
   const dispatch = useDispatch();
   const handleBlogDeletion = async () => {
     if (
@@ -45,6 +45,7 @@ const Blog = ({ blog, user }) => {
     border: "solid",
     borderWidth: 1,
     marginBottom: 5,
+    borderColor: "black",
   };
   const dispatch = useDispatch();
   // const increaseLikeCount =

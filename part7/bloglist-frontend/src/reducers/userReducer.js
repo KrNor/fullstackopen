@@ -32,7 +32,7 @@ export const initializeUser = () => {
     const user = await dispatch(getUser());
 
     const loggedUserJSON = window.localStorage.getItem("loggedBlogappUser");
-    console.log(loggedUserJSON);
+    // console.log(loggedUserJSON);
     if (loggedUserJSON) {
       const user = JSON.parse(loggedUserJSON);
       dispatch(setUser(user));
@@ -47,7 +47,7 @@ export const initializeUser = () => {
 
     // console.log("this is the user");
     // console.log(user);
-    console.log(user.payload);
+    // console.log(user.payload);
     return user.payload;
   };
 };

@@ -11,6 +11,12 @@ const getAll = async () => {
   return request.then((response) => response.data);
 };
 
+const getById = async (id) => {
+  const request = await axios.get(baseUrl + `/${id}`);
+  // console.log(request.data);
+  return request.data;
+};
+
 const create = async (newObject) => {
   const config = { headers: { Authorization: token } };
   const response = await axios.post(baseUrl, newObject, config);
@@ -40,4 +46,4 @@ const likeBlog = async (likedBlog) => {
   return response.data;
 };
 
-export default { getAll, create, setToken, likeBlog, deleteBlog };
+export default { getAll, create, setToken, likeBlog, deleteBlog, getById };
