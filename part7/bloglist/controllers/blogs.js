@@ -11,6 +11,22 @@ BlogRouter.get("/", async (request, response, next) => {
   response.json(blog);
 });
 
+BlogRouter.get("/:id", async (request, response, next) => {
+  if (ObjectId.isValid(request.params.id)) {
+    const blog = await Blog.findById(request.params.id).populate("user", {
+      id: 1,
+      name: 1,
+      username: 1,
+    });
+    if (blog) {
+      return response.status(200).json(blog);
+    } else {
+      return response.status(404).json({ error: "blog was not found" });
+    }
+  }
+  return response.status(404).json({ error: "invalid request" });
+});
+
 BlogRouter.post(
   "/",
   middleware.userExtractor,
