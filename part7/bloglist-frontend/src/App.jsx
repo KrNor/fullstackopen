@@ -33,8 +33,6 @@ const App = () => {
 
   const [visible, setVisible] = useState(false);
 
-  const helloBoxRef = useRef();
-
   useEffect(() => {
     dispatch(initializeUser());
   }, []);
@@ -73,10 +71,6 @@ const App = () => {
     } catch (error) {
       dispatch(setNotification("something wrnt wrong with the logout"));
     }
-  };
-
-  const makeLocalNicknameBetter = () => {
-    helloBoxRef.current.setPersonalNickname();
   };
 
   if (_.isEmpty(user)) {
@@ -121,15 +115,24 @@ const App = () => {
     marginBottom: 5,
   };
 
+  const navigationStyle = {
+    backgroundColor: "grey",
+  };
+
   return (
     <Router>
       <div className="container">
-        <WelcomeBox
-          buttonLabel="WelcomeBox"
-          ref={helloBoxRef}
-          user={user}
-          handleLogout={handleLogout}
-        />
+        <div style={navigationStyle}>
+          <Link to="/">home </Link>
+          <Link to="/">blogs </Link>
+          <Link to="/users">users </Link>
+          <WelcomeBox
+            buttonLabel="WelcomeBox"
+            user={user}
+            handleLogout={handleLogout}
+          />
+        </div>
+
         <Notification />
         <Routes>
           <Route path="/users/:id" element={<User />} />
@@ -140,9 +143,6 @@ const App = () => {
             element={
               <div>
                 <h2>The list of blogs!</h2>
-                <button onClick={makeLocalNicknameBetter}>
-                  make my nickname better
-                </button>
                 <Togglable
                   buttonLabel="create new blog"
                   setVisibility={setVisible}
