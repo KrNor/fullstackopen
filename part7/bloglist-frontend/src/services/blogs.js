@@ -46,4 +46,23 @@ const likeBlog = async (likedBlog) => {
   return response.data;
 };
 
-export default { getAll, create, setToken, likeBlog, deleteBlog, getById };
+const commentBlog = async (blogObj, gottenComment) => {
+  const commentObj = { comment: gottenComment };
+  console.log(baseUrl + "/" + blogObj.id + "/comments");
+  const response = await axios.post(
+    baseUrl + "/" + blogObj.id + "/comments",
+    commentObj
+  );
+  console.log(response);
+  return response.data;
+};
+
+export default {
+  getAll,
+  create,
+  setToken,
+  likeBlog,
+  deleteBlog,
+  getById,
+  commentBlog,
+};

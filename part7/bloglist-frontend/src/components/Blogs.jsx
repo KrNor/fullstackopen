@@ -44,7 +44,7 @@ export const DeleteButton = ({ blog }) => {
 const Blogs = () => {
   const dispatch = useDispatch();
   const [blogToShow, setBlogToShow] = useState({});
-  // const [commentIds, setCommentIds] = useState(1);
+  const [blogComment, setBlogComment] = useState("");
   const id = useParams().id;
 
   const user = useSelector((state) => {
@@ -65,18 +65,10 @@ const Blogs = () => {
     return <div>Loading blog...</div>;
   }
 
-  // const handleCommentIds = async () => {
-  //   console.log(commentIds);
-  //   const tempid = commentIds;
-  //   await setCommentIds(tempid + 1);
-  //   return tempid + 1;
-  // };
-
   const handleLikeClick = async () => {
     try {
       dispatch(likeBlog(blogToShow));
       setBlogToShow({ ...blogToShow, likes: blogToShow.likes + 1 });
-      dispatch(initializeBlogs());
     } catch (error) {
       dispatch(
         setNotification(
@@ -85,10 +77,24 @@ const Blogs = () => {
       );
     }
   };
+
+  const handleCommentSubmit = async (event) => {
+    event.preventDefault();
+    try {
+      await BlogService.commentBlog(blogToShow, blogComment);
+      setBlogToShow({
+        ...blogToShow,
+        comments: blogToShow.comments.concat(blogComment),
+      });
+      setBlogComment("");
+      dispatch(initializeBlogs());
+    } catch (error) {
+      dispatch(
+        setNotification("Something went wrong when trying to submit a comment")
+      );
+    }
+  };
   let deleteButtonStyle = {};
-  // console.log(user.username);
-  // console.log("up is user down is blogtoshow");
-  // console.log(blogToShow.user.username);
   if (user && blogToShow.user.username === user.username) {
     deleteButtonStyle = { display: "" };
   } else {
@@ -113,7 +119,19 @@ const Blogs = () => {
       </div>
       <div>
         <ul>
-          comments:
+          <h2>comments:</h2>
+          <div>
+            <form onSubmit={handleCommentSubmit}>
+              <input
+                type="text"
+                value={blogComment}
+                name="comment"
+                onChange={({ target }) => setBlogComment(target.value)}
+              ></input>
+              <button type="submit"> send</button>
+            </form>
+          </div>
+
           {blogToShow.comments.map((comment) => {
             return (
               <li key={Math.floor(Math.random() * 10000000) + 1}>{comment}</li>
