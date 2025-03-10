@@ -157,7 +157,7 @@ const App = () => {
                 >
                   <CreateBlog setVisibility={setVisible} />
                 </Togglable>
-                <Table striped>
+                <Table striped bordered hover>
                   <tbody>
                     {[...blog]
                       .sort((a, b) => b.likes - a.likes)
