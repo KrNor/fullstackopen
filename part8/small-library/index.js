@@ -114,6 +114,10 @@ const typeDefs = `
       author: String!
       genres: [String!]!
     ): Book
+    editAuthor(
+      name: String!
+      setBornTo: Int!
+    ):Author
   }
 `;
 
@@ -165,6 +169,19 @@ const resolvers = {
       const newBook = { ...args, id: uuid() };
       books = books.concat(newBook);
       return newBook;
+    },
+    editAuthor: (root, args) => {
+      const foundAuth = authors.find((auth) => {
+        return auth.name === args.name;
+      });
+
+      if (foundAuth !== undefined) {
+        const updatedAuth = { ...foundAuth, born: args.setBornTo };
+        authors = authors.map((aauth) =>
+          aauth.name === args.name ? updatedAuth : aauth
+        );
+        return updatedAuth;
+      }
     },
   },
 };
