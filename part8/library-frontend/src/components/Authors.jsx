@@ -16,16 +16,17 @@ const Authors = () => {
     return <div>Authors loading...</div>;
   }
   const authors = result.data.allAuthors;
+
   const submit = async (event) => {
     event.preventDefault();
 
-    editAuthor({
+    await editAuthor({
       variables: {
         name,
         setBornTo: parseInt(born),
       },
     });
-    setName("");
+
     setBorn("");
   };
   return (
@@ -51,12 +52,21 @@ const Authors = () => {
         <h2>Set birthyear</h2>
         <form onSubmit={submit}>
           <div>
-            name:
-            <input
-              value={name}
-              type="text"
-              onChange={({ target }) => setName(target.value)}
-            />
+            <label>
+              name:
+              <select
+                defaultValue=""
+                name="name"
+                onChange={({ target }) => setName(target.value)}
+              >
+                <option value="">{"pick an author"}</option>
+                {authors.map((author) => (
+                  <option key={author.name} value={author.name}>
+                    {author.name}
+                  </option>
+                ))}
+              </select>
+            </label>
           </div>
           <div>
             born:
