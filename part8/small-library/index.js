@@ -142,33 +142,48 @@ const resolvers = {
       return await Author.countDocuments({});
     },
     allAuthors: async () => await Author.find({}),
-    allBooks: (root, args) => {
-      let authorExists = false;
-      let genreExists = false;
-      if (args.author) {
-        authorExists = true;
-      }
-      if (args.genre) {
-        genreExists = true;
-      }
+    allBooks: async (root, args) => {
+      // at start only all authors will be returned
+      // temporary
+      return await Book.find({});
 
-      if (authorExists && genreExists) {
-        return books
-          .filter((boook) => boook.author === args.author)
-          .filter((boook) => boook.genres.find((gnr) => gnr === args.genre));
-      } else if (authorExists) {
-        return books.filter((boook) => boook.author === args.author);
-      } else if (genreExists) {
-        return books.filter((boook) =>
-          boook.genres.find((gnr) => gnr === args.genre)
-        );
-      }
-      return books;
+      // let authorExists = false;
+      // let genreExists = false;
+      // if (args.author) {
+      //   authorExists = true;
+      // }
+      // if (args.genre) {
+      //   genreExists = true;
+      // }
+
+      // if (authorExists && genreExists) {
+      //   return books
+      //     .filter((boook) => boook.author === args.author)
+      //     .filter((boook) => boook.genres.find((gnr) => gnr === args.genre));
+      // } else if (authorExists) {
+      //   return books.filter((boook) => boook.author === args.author);
+      // } else if (genreExists) {
+      //   return books.filter((boook) =>
+      //     boook.genres.find((gnr) => gnr === args.genre)
+      //   );
+      // }
+      // return books;
     },
   },
   Author: {
-    bookCount: (root, args) => {
-      return books.filter((book) => book.author === root.name).length;
+    bookCount: async (root, args) => {
+      const foundAuth = await Author.findOne({ name: root.name });
+      if (!foundAuth) {
+        throw new GraphQLError("searching the author failed", {
+          extensions: {
+            code: "AUTHOR_SEARCH_FAILED",
+            invalidArgs: args.name,
+            error,
+          },
+        });
+      }
+
+      return await Book.countDocuments({ author: foundAuth._id });
     },
   },
   Mutation: {
@@ -200,21 +215,25 @@ const resolvers = {
         author: existingAuthor,
         genres: args.genres,
       };
-      console.log(newBookk);
+      // console.log(newBookk);
       return await Book.create(newBookk);
     },
-    editAuthor: (root, args) => {
-      const foundAuth = authors.find((auth) => {
-        return auth.name === args.name;
+    editAuthor: async (root, args) => {
+      const existingAuthor = await Author.findOne({
+        name: `${args.name}`,
       });
-
-      if (foundAuth !== undefined) {
-        const updatedAuth = { ...foundAuth, born: args.setBornTo };
-        authors = authors.map((aauth) =>
-          aauth.name === args.name ? updatedAuth : aauth
-        );
-        return updatedAuth;
+      // console.log(existingAuthor);
+      if (!existingAuthor) {
+        throw new GraphQLError("finding author failed", {
+          extensions: {
+            code: "AUTHOR_FIND_FAILED",
+            invalidArgs: args.name,
+          },
+        });
+      } else {
+        existingAuthor.born = args.setBornTo;
       }
+      return await existingAuthor.save();
     },
   },
 };
