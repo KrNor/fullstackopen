@@ -65,31 +65,42 @@ const resolvers = {
     },
     allAuthors: async () => await Author.find({}),
     allBooks: async (root, args) => {
-      // at start only all authors will be returned
-      // temporary
-      return await Book.find({});
+      let authorInArgs = false;
+      let genreInArgs = false;
+      if (args.author) {
+        authorInArgs = true;
+      }
+      if (args.genre) {
+        genreInArgs = true;
+      }
 
-      // let authorExists = false;
-      // let genreExists = false;
-      // if (args.author) {
-      //   authorExists = true;
-      // }
-      // if (args.genre) {
-      //   genreExists = true;
-      // }
+      try {
+        if (authorInArgs && genreInArgs) {
+          const authorr = await Author.findOne({
+            name: `${args.author}`,
+          });
 
-      // if (authorExists && genreExists) {
-      //   return books
-      //     .filter((boook) => boook.author === args.author)
-      //     .filter((boook) => boook.genres.find((gnr) => gnr === args.genre));
-      // } else if (authorExists) {
-      //   return books.filter((boook) => boook.author === args.author);
-      // } else if (genreExists) {
-      //   return books.filter((boook) =>
-      //     boook.genres.find((gnr) => gnr === args.genre)
-      //   );
-      // }
-      // return books;
+          return await Book.find({ author: authorr._id, genres: args.genre });
+        } else if (authorInArgs) {
+          const authorr = await Author.findOne({
+            name: `${args.author}`,
+          });
+
+          return await Book.find({ author: authorr._id });
+        } else if (genreInArgs) {
+          return await Book.find({ genres: args.genre });
+        }
+        return await Book.find({});
+      } catch (error) {
+        throw new GraphQLError(
+          "There was an error trying to get books from the server, please give correct information",
+          {
+            extensions: {
+              code: "ERROR_GETTING_BOOKS",
+            },
+          }
+        );
+      }
     },
   },
   Author: {
@@ -100,7 +111,6 @@ const resolvers = {
           extensions: {
             code: "AUTHOR_SEARCH_FAILED",
             invalidArgs: args.name,
-            error,
           },
         });
       }
