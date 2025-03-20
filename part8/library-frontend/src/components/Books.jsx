@@ -6,6 +6,7 @@ const Books = () => {
   if (result.loading) {
     return <div>Books are loading...</div>;
   }
+  console.log(result.data.allBooks);
 
   const books = result.data.allBooks;
 
@@ -23,7 +24,7 @@ const Books = () => {
           {books.map((a) => (
             <tr key={a.title}>
               <td>{a.title}</td>
-              <td>{a.author}</td>
+              <td>{a.author.name}</td>
               <td>{a.published}</td>
             </tr>
           ))}
