@@ -124,9 +124,10 @@ const resolvers = {
       return context.currentUser;
     },
   },
+  // this works but I am not happy about how it does
   Author: {
     bookCount: async (root, args) => {
-      const foundAuth = await Author.findOne({ name: root.name });
+      const foundAuth = await Author.findById(root._id);
       if (!foundAuth) {
         throw new GraphQLError("searching the author failed", {
           extensions: {
@@ -137,6 +138,17 @@ const resolvers = {
       }
 
       return await Book.countDocuments({ author: foundAuth._id });
+    },
+    name: async (root, args) => {
+      const foundAuth = await Author.findById(root._id);
+      return foundAuth.name;
+    },
+    born: async (root, args) => {
+      const foundAuth = await Author.findById(root._id);
+      return foundAuth.born;
+    },
+    id: async (root, args) => {
+      return root._id;
     },
   },
   Mutation: {
