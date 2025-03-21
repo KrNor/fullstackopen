@@ -6,8 +6,6 @@ const Books = () => {
   if (result.loading) {
     return <div>Books are loading...</div>;
   }
-  console.log(result.data.allBooks);
-
   const books = result.data.allBooks;
 
   return (
