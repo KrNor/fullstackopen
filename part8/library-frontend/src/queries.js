@@ -14,6 +14,7 @@ export const GET_ALL_BOOKS = gql`
   query {
     allBooks {
       title
+      genres
       published
       author {
         name
@@ -65,3 +66,38 @@ export const LOGIN = gql`
     }
   }
 `;
+
+export const GET_ALL_GENRES = gql`
+  query AllBooks {
+    allGenres
+  }
+`;
+
+export const GET_BOOKS_BY_GENRE = gql`
+  query Query($genre: String!) {
+    allBooks(genre: $genre) {
+      title
+      published
+      author {
+        name
+      }
+      genres
+      id
+    }
+  }
+`;
+
+// query Query($genre: String) {
+//   allBooks(genre: $genre) {
+
+//   }
+// }
+
+// query {
+//   allBooks(genre: "horror") {
+//     title
+//     published
+//     id
+//     genres
+//   }
+// }
