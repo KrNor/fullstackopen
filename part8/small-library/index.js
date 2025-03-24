@@ -50,6 +50,7 @@ const typeDefs = `
     allBooks (author: String, genre: String): [Book!]
     allAuthors: [Author!]!
     me: User
+    allGenres: [String]!
   }
   type Mutation {
     addBook(
@@ -122,6 +123,9 @@ const resolvers = {
     },
     me: (root, args, context) => {
       return context.currentUser;
+    },
+    allGenres: async () => {
+      return await Book.find().distinct("genres");
     },
   },
   // this works but I am not happy about how it does
