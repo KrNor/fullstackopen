@@ -4,6 +4,7 @@ import Authors from "./components/Authors";
 import Books from "./components/Books";
 import NewBook from "./components/NewBook";
 import LoginForm from "./components/LoginForm";
+import Recommendations from "./components/Recommendations";
 import {
   BrowserRouter as Router,
   Routes,
@@ -55,12 +56,25 @@ const App = () => {
         <button>
           <Link to="/books">books</Link>
         </button>
+        <button>
+          <Link to="/recommendations">recommendations</Link>
+        </button>
         <UserLoginThing token={token} setToken={setToken} />
       </div>
 
       <Routes>
         <Route path="/authors" element={<Authors token={token} />} />
         <Route path="/books" element={<Books />} />
+        <Route
+          path="/recommendations"
+          element={
+            token === null ? (
+              <div>Log in to see recommendations</div>
+            ) : (
+              <Recommendations />
+            )
+          }
+        />
         <Route path="/add" element={<NewBook />} />
         <Route
           path="/login"

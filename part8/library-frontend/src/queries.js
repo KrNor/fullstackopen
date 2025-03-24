@@ -87,17 +87,12 @@ export const GET_BOOKS_BY_GENRE = gql`
   }
 `;
 
-// query Query($genre: String) {
-//   allBooks(genre: $genre) {
-
-//   }
-// }
-
-// query {
-//   allBooks(genre: "horror") {
-//     title
-//     published
-//     id
-//     genres
-//   }
-// }
+export const GET_USER_INFO = gql`
+  query Query {
+    me {
+      username
+      id
+      favoriteGenre
+    }
+  }
+`;

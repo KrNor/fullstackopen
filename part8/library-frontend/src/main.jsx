@@ -10,7 +10,7 @@ import {
 import { setContext } from "@apollo/client/link/context";
 
 const authLink = setContext((request, { headers }) => {
-  console.log(headers);
+  // console.log(headers);
   const token = localStorage.getItem("library-user-token");
   return {
     headers: { ...headers, authorization: token ? `Bearer ${token}` : null },

@@ -16,7 +16,6 @@ const Books = () => {
   }
 
   const books = bookQuerry.data.allBooks;
-  console.log(books);
   const sortedBooks =
     currentGenre === "all"
       ? books
@@ -25,10 +24,8 @@ const Books = () => {
         });
 
   const genres = genreQuerry.data.allGenres;
-  console.log(sortedBooks);
 
   const changeGenre = (props) => {
-    console.log("this is the current genre:", props);
     setCurrentGenre(props);
   };
 
