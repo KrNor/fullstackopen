@@ -1,27 +1,47 @@
+/* eslint-disable react/prop-types */
 import { useQuery } from "@apollo/client";
 import { useState } from "react";
-import { GET_ALL_BOOKS, GET_ALL_GENRES } from "../queries";
+import { GET_BOOKS_BY_GENRE, GET_ALL_GENRES } from "../queries";
 
-const Books = () => {
-  const [currentGenre, setCurrentGenre] = useState("all");
-
-  const genreQuerry = useQuery(GET_ALL_GENRES);
-  const bookQuerry = useQuery(GET_ALL_BOOKS);
+const BookTable = ({ currentGenre }) => {
+  const bookQuerry = useQuery(GET_BOOKS_BY_GENRE, {
+    variables: { genre: currentGenre },
+  });
 
   if (bookQuerry.loading) {
     return <div>Books are loading...</div>;
   }
+  const books = bookQuerry.data.allBooks;
+  // console.log(currentGenre);
+
+  return (
+    <table>
+      <tbody>
+        <tr>
+          <th></th>
+          <th>author</th>
+          <th>published</th>
+        </tr>
+        {books.map((a) => (
+          <tr key={a.title}>
+            <td>{a.title}</td>
+            <td>{a.author.name}</td>
+            <td>{a.published}</td>
+          </tr>
+        ))}
+      </tbody>
+    </table>
+  );
+};
+
+const Books = () => {
+  const [currentGenre, setCurrentGenre] = useState("");
+
+  const genreQuerry = useQuery(GET_ALL_GENRES);
+
   if (genreQuerry.loading) {
     return <div>Genres are loading...</div>;
   }
-
-  const books = bookQuerry.data.allBooks;
-  const sortedBooks =
-    currentGenre === "all"
-      ? books
-      : books.filter((book) => {
-          return book.genres.includes(currentGenre);
-        });
 
   const genres = genreQuerry.data.allGenres;
 
@@ -33,29 +53,14 @@ const Books = () => {
     <div>
       <h2>books</h2>
 
-      <table>
-        <tbody>
-          <tr>
-            <th></th>
-            <th>author</th>
-            <th>published</th>
-          </tr>
-          {sortedBooks.map((a) => (
-            <tr key={a.title}>
-              <td>{a.title}</td>
-              <td>{a.author.name}</td>
-              <td>{a.published}</td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
+      <BookTable currentGenre={currentGenre} />
       <div>
         {genres.map((genre) => (
           <button key={genre} onClick={() => changeGenre(genre)}>
             {genre}
           </button>
         ))}
-        <button key={"all"} onClick={() => changeGenre("all")}>
+        <button key={""} onClick={() => changeGenre("")}>
           All genres
         </button>
       </div>
