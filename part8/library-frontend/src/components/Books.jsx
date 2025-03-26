@@ -1,18 +1,25 @@
 /* eslint-disable react/prop-types */
-import { useQuery } from "@apollo/client";
+import { useQuery, useSubscription } from "@apollo/client";
 import { useState } from "react";
-import { GET_BOOKS_BY_GENRE, GET_ALL_GENRES } from "../queries";
+import { GET_BOOKS_BY_GENRE, GET_ALL_GENRES, BOOK_ADDED } from "../queries";
 
 const BookTable = ({ currentGenre }) => {
   const bookQuerry = useQuery(GET_BOOKS_BY_GENRE, {
     variables: { genre: currentGenre },
+    fetchPolicy: "cache-and-network",
+  });
+
+  useSubscription(BOOK_ADDED, {
+    onData: ({ data }) => {
+      bookQuerry.refetch();
+      window.alert(`A new book: "${data.data.bookAdded.title}" was added!`);
+    },
   });
 
   if (bookQuerry.loading) {
     return <div>Books are loading...</div>;
   }
   const books = bookQuerry.data.allBooks;
-  // console.log(currentGenre);
 
   return (
     <table>

@@ -5,7 +5,6 @@ import Books from "./components/Books";
 import NewBook from "./components/NewBook";
 import LoginForm from "./components/LoginForm";
 import Recommendations from "./components/Recommendations";
-import { BOOK_ADDED } from "./queries";
 import {
   BrowserRouter as Router,
   Routes,
@@ -13,7 +12,7 @@ import {
   Link,
   useNavigate,
 } from "react-router-dom";
-import { useApolloClient, useSubscription } from "@apollo/client";
+import { useApolloClient } from "@apollo/client";
 
 const UserLoginThing = ({ token, setToken }) => {
   const client = useApolloClient();
@@ -47,13 +46,6 @@ const App = () => {
   useEffect(() => {
     setToken(localStorage.getItem("library-user-token"));
   }, []);
-
-  useSubscription(BOOK_ADDED, {
-    onData: ({ data }) => {
-      console.log(data.data);
-      window.alert(`A new book: "${data.data.bookAdded.title}" was added!`);
-    },
-  });
 
   return (
     <Router>
