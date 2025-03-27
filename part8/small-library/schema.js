@@ -4,6 +4,7 @@ const typeDefs = `
     id: ID!
     born: Int
     bookCount: Int!
+    writtenBooks: [Book]!
   }
   type Book {
     title: String!

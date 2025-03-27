@@ -9,12 +9,16 @@ const User = require("./models/user");
 const resolvers = {
   Query: {
     bookCount: async () => {
+      console.log("bookCount() querry call");
       return await Book.countDocuments({});
     },
     authorCount: async () => {
       return await Author.countDocuments({});
     },
-    allAuthors: async () => await Author.find({}),
+    allAuthors: async () => {
+      console.log("Author.find() call");
+      return await Author.find({});
+    },
     allBooks: async (root, args) => {
       let authorInArgs = false;
       let genreInArgs = false;
@@ -62,17 +66,23 @@ const resolvers = {
   },
   Author: {
     bookCount: async (root, args) => {
-      const foundAuth = await Author.findById(root._id);
-      if (!foundAuth) {
-        throw new GraphQLError("searching the author failed", {
-          extensions: {
-            code: "AUTHOR_SEARCH_FAILED",
-            invalidArgs: args.name,
-          },
-        });
-      }
+      // now it just takes the length of the list of books saved in the author object
+      console.log("bookCount() inAuthor call");
+      // console.log(root);
+      return root.writtenBooks.length;
 
-      return await Book.countDocuments({ author: foundAuth._id });
+      // this was the old call to the server
+      // const foundAuth = await Author.findById(root._id);
+      // if (!foundAuth) {
+      //   throw new GraphQLError("searching the author failed", {
+      //     extensions: {
+      //       code: "AUTHOR_SEARCH_FAILED",
+      //       invalidArgs: args.name,
+      //     },
+      //   });
+      // }
+
+      // return await Book.countDocuments({ author: foundAuth._id });
     },
     name: async (root, args) => {
       const foundAuth = await Author.findById(root._id);
@@ -104,8 +114,10 @@ const resolvers = {
         if (existingAuthor === null) {
           existingAuthor = await Author.create({
             name: `${args.author}`,
+            writtenBooks: [],
           });
         }
+        await existingAuthor.save();
       } catch (error) {
         throw new GraphQLError("checking/making the author failed", {
           extensions: {
@@ -118,10 +130,12 @@ const resolvers = {
       const newBookk = {
         title: args.title,
         published: args.published,
-        author: existingAuthor,
+        author: existingAuthor._id,
         genres: args.genres,
       };
       let newlyCreatedBook = null;
+      // console.log("this is the author that the book will be added to:");
+      // console.log(existingAuthor);
       try {
         newlyCreatedBook = await Book.create(newBookk);
       } catch (error) {
@@ -133,6 +147,23 @@ const resolvers = {
           },
         });
       }
+
+      try {
+        existingAuthor.writtenBooks.push(newlyCreatedBook._id);
+
+        // console.log(existingAuthor);
+        await existingAuthor.save();
+      } catch (error) {
+        throw new GraphQLError("Book addition to authors list failed", {
+          extensions: {
+            code: "BOOK_ADDITION_TO_AUTHOR_FAILED",
+            invalidArgs: newBookk,
+            error,
+          },
+        });
+      }
+      // console.log(newlyCreatedBook);
+      // console.log(existingAuthor);
       pubsub.publish("BOOK_ADDED", { bookAdded: newlyCreatedBook });
 
       return newlyCreatedBook;
