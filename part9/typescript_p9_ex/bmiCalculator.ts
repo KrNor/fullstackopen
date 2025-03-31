@@ -1,5 +1,15 @@
-const calculateBmi = (height: number, weight: number): string => {
-  const bmi = (weight / (height * height)) * 10000;
+import { makeThisANumber } from "./utils";
+
+const calculateBmi = (height: string, weight: string): string => {
+  const parsedHeight = makeThisANumber(height);
+
+  const parsedWeight = makeThisANumber(weight);
+
+  if (isNaN(parsedHeight) || isNaN(parsedWeight)) {
+    throw new Error("Non number values were entered");
+  }
+
+  const bmi = (parsedWeight / (parsedHeight * parsedHeight)) * 10000;
 
   //   console.log(bmi);
 
@@ -13,7 +23,21 @@ const calculateBmi = (height: number, weight: number): string => {
   else if (bmi < 40) return "Obese (Class II)";
   else if (bmi >= 40) return "Obese (Class III)";
 
-  return "something went wrong with calculating the bmi";
+  throw new Error("calculating the bmi failed, possibly unrealistic values");
 };
 
-console.log(calculateBmi(180, 74));
+try {
+  if (process.argv.length === 4) {
+    console.log(calculateBmi(process.argv[2], process.argv[3]));
+  } else {
+    throw new Error("The wrong ammount of arguments were provided");
+  }
+} catch (error: unknown) {
+  let errMessage = "Something wrong happened: ";
+  if (error instanceof Error) {
+    errMessage += error.message;
+  } else {
+    errMessage += "unknown error";
+  }
+  console.log(errMessage);
+}
