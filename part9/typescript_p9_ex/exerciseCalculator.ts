@@ -10,7 +10,9 @@ interface resultObject {
   average: number;
 }
 
-const calculateExercises = (providedArguments: string[]): resultObject => {
+export const calculateExercises = (
+  providedArguments: string[]
+): resultObject => {
   const argsThatAreNumbers: number[] =
     makeStringListNumberList(providedArguments);
 
@@ -59,19 +61,21 @@ const calculateExercises = (providedArguments: string[]): resultObject => {
   return objectToReturn;
 };
 
-try {
-  //   console.log(process.argv);
-  if (process.argv.length > 3) {
-    console.log(calculateExercises(process.argv.slice(2)));
-  } else {
-    throw new Error("The wrong ammount of arguments were provided");
+if (require.main === module) {
+  try {
+    //   console.log(process.argv);
+    if (process.argv.length > 3) {
+      console.log(calculateExercises(process.argv.slice(2)));
+    } else {
+      throw new Error("The wrong ammount of arguments were provided");
+    }
+  } catch (error: unknown) {
+    let errMessage = "Something wrong happened: ";
+    if (error instanceof Error) {
+      errMessage += error.message;
+    } else {
+      errMessage += "unknown error";
+    }
+    console.log(errMessage);
   }
-} catch (error: unknown) {
-  let errMessage = "Something wrong happened: ";
-  if (error instanceof Error) {
-    errMessage += error.message;
-  } else {
-    errMessage += "unknown error";
-  }
-  console.log(errMessage);
 }
