@@ -1,6 +1,6 @@
 import { makeThisANumber } from "./utils";
 
-const calculateBmi = (height: string, weight: string): string => {
+export const calculateBmi = (height: string, weight: string): string => {
   const parsedHeight = makeThisANumber(height);
 
   const parsedWeight = makeThisANumber(weight);
@@ -9,9 +9,13 @@ const calculateBmi = (height: string, weight: string): string => {
     throw new Error("Non number values were entered");
   }
 
+  if (parsedHeight <= 0 || parsedWeight <= 0) {
+    throw new Error("The values have to be somewhat realistic...");
+  }
+
   const bmi = (parsedWeight / (parsedHeight * parsedHeight)) * 10000;
 
-  //   console.log(bmi);
+  // console.log(bmi);
 
   if (bmi < 16) {
     return "Underweight (Severe thinness)";
@@ -26,18 +30,20 @@ const calculateBmi = (height: string, weight: string): string => {
   throw new Error("calculating the bmi failed, possibly unrealistic values");
 };
 
-try {
-  if (process.argv.length === 4) {
-    console.log(calculateBmi(process.argv[2], process.argv[3]));
-  } else {
-    throw new Error("The wrong ammount of arguments were provided");
+if (require.main === module) {
+  try {
+    if (process.argv.length === 4) {
+      console.log(calculateBmi(process.argv[2], process.argv[3]));
+    } else {
+      throw new Error("The wrong ammount of arguments were provided");
+    }
+  } catch (error: unknown) {
+    let errMessage = "Something wrong happened: ";
+    if (error instanceof Error) {
+      errMessage += error.message;
+    } else {
+      errMessage += "unknown error";
+    }
+    console.log(errMessage);
   }
-} catch (error: unknown) {
-  let errMessage = "Something wrong happened: ";
-  if (error instanceof Error) {
-    errMessage += error.message;
-  } else {
-    errMessage += "unknown error";
-  }
-  console.log(errMessage);
 }
