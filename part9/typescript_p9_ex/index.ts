@@ -12,13 +12,12 @@ app.get("/hello", (_req, res) => {
 app.get("/bmi", (req, res) => {
   if (req.query.height && req.query.weight) {
     try {
-      const returnedBmiStatus = calculateBmi(
-        req.query.height.toString(),
-        req.query.weight.toString()
-      );
+      const currHeight: string = JSON.stringify(req.query.height);
+      const currWeight: string = JSON.stringify(req.query.weight);
+      const returnedBmiStatus = calculateBmi(currHeight, currWeight);
       res.json({
-        weight: req.query.weight.toString(),
-        height: req.query.height.toString(),
+        height: currHeight,
+        weight: currWeight,
         bmi: returnedBmiStatus,
       });
     } catch (error: unknown) {

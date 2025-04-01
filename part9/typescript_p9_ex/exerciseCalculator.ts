@@ -11,8 +11,6 @@ interface resultObject {
 }
 
 const calculateExercises = (providedArguments: string[]): resultObject => {
-  //   console.log(providedArguments);
-
   const argsThatAreNumbers: number[] =
     makeStringListNumberList(providedArguments);
 
@@ -24,24 +22,24 @@ const calculateExercises = (providedArguments: string[]): resultObject => {
     days.reduce((accumulator, currentValue) => accumulator + currentValue) /
     days.length;
 
-  let ratingAndDescription = {
+  const ratingAndDescription = {
     rating: 0,
     description: "",
     goalDone: false,
   };
 
   if (avg < target) {
-    (ratingAndDescription.rating = 1),
-      (ratingAndDescription.description = "not too bad but could be better"),
-      (ratingAndDescription.goalDone = false);
+    ratingAndDescription.rating = 1;
+    ratingAndDescription.description = "not too bad but could be better";
+    ratingAndDescription.goalDone = false;
   } else if (avg >= target && avg < target * 2) {
-    (ratingAndDescription.rating = 2),
-      (ratingAndDescription.description = "The goal was met, well done!"),
-      (ratingAndDescription.goalDone = true);
+    ratingAndDescription.rating = 2;
+    ratingAndDescription.description = "The goal was met, well done!";
+    ratingAndDescription.goalDone = true;
   } else if (avg >= target * 2) {
-    (ratingAndDescription.rating = 3),
-      (ratingAndDescription.description = "The goal was overshot by alot!"),
-      (ratingAndDescription.goalDone = true);
+    ratingAndDescription.rating = 3;
+    ratingAndDescription.description = "The goal was overshot by alot!";
+    ratingAndDescription.goalDone = true;
   } else {
     throw new Error(
       "something went wrong with calculating exercise averages, entered values might be unrealistic"
@@ -49,7 +47,7 @@ const calculateExercises = (providedArguments: string[]): resultObject => {
   }
 
   //   console.log(avg);
-  let objectToReturn = {
+  const objectToReturn = {
     periodLength: days.length,
     trainingDays: days.filter((hours) => hours > 0).length,
     success: ratingAndDescription.goalDone,

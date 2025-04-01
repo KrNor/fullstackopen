@@ -2,7 +2,7 @@ export const makeThisANumber = (stringToParse: string): number => {
   return Number(stringToParse);
 };
 export const makeStringListNumberList = (stringList: string[]): number[] => {
-  let listToReturn: number[] = [];
+  const listToReturn: number[] = [];
 
   stringList.forEach((potentialNumber) => {
     const parsedNum = makeThisANumber(potentialNumber);
