@@ -5,9 +5,6 @@ const router = express.Router();
 
 router.get("/", (_req, res) => {
   const gottenDiagnoses = diagnosyServices.getDiagnoses();
-  //   const gottenDiagnoses = diagnosyServices.getDiagnosesNoLatin();
-
-  //   console.log(gottenDiagnoses);
   res.json(gottenDiagnoses);
 });
 
