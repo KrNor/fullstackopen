@@ -1,3 +1,5 @@
+// import { NewPatientEntry } from "../src/types";
+
 const data = [
   {
     code: "M24.2",

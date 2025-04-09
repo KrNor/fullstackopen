@@ -1,3 +1,5 @@
+import { Patient, Gender } from "../src/types";
+
 const data = [
   {
     id: "d2773336-f723-11e9-8f0b-362b9e155667",
@@ -41,4 +43,10 @@ const data = [
   },
 ];
 
-export default data;
+const patientEntries: Patient[] = data.map((initialPatient) => {
+  const parsedGender = initialPatient.gender as Gender;
+  const patientToReturn = { ...initialPatient, gender: parsedGender };
+  return patientToReturn;
+});
+
+export default patientEntries;
