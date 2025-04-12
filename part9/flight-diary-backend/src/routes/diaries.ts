@@ -1,17 +1,17 @@
-import express, { Request, Response, NextFunction } from 'express';
-import diaryService from '../services/diaryService';
-import { NewEntrySchema } from '../utils';
+import express, { Request, Response, NextFunction } from "express";
+import diaryService from "../services/diaryService";
+import { NewEntrySchema } from "../utils";
 
-import { z } from 'zod';
-import { NewDiaryEntry, DiaryEntry } from '../types';
+import { z } from "zod";
+import { NewDiaryEntry, DiaryEntry } from "../types";
 
 const router = express.Router();
 
-router.get('/', (_req, res: Response<DiaryEntry[]>) => {
-  res.send(diaryService.getNonSensitiveEntries());
+router.get("/", (_req, res: Response<DiaryEntry[]>) => {
+  res.send(diaryService.getEntries());
 });
 
-router.get('/:id', (req, res) => {
+router.get("/:id", (req, res) => {
   const diary = diaryService.findById(Number(req.params.id));
 
   if (diary) {
@@ -21,7 +21,7 @@ router.get('/:id', (req, res) => {
   }
 });
 
-const newDiaryParser = (req: Request, _res: Response, next: NextFunction) => { 
+const newDiaryParser = (req: Request, _res: Response, next: NextFunction) => {
   try {
     NewEntrySchema.parse(req.body);
     console.log(req.body);
@@ -31,7 +31,12 @@ const newDiaryParser = (req: Request, _res: Response, next: NextFunction) => {
   }
 };
 
-const errorMiddleware = (error: unknown, _req: Request, res: Response, next: NextFunction) => { 
+const errorMiddleware = (
+  error: unknown,
+  _req: Request,
+  res: Response,
+  next: NextFunction
+) => {
   if (error instanceof z.ZodError) {
     res.status(400).send({ error: error.issues });
   } else {
@@ -39,10 +44,17 @@ const errorMiddleware = (error: unknown, _req: Request, res: Response, next: Nex
   }
 };
 
-router.post('/', newDiaryParser, (req: Request<unknown, unknown, NewDiaryEntry>, res: Response<DiaryEntry>) => {
-  const addedEntry = diaryService.addDiary(req.body);
-  res.json(addedEntry);
-});
+router.post(
+  "/",
+  newDiaryParser,
+  (
+    req: Request<unknown, unknown, NewDiaryEntry>,
+    res: Response<DiaryEntry>
+  ) => {
+    const addedEntry = diaryService.addDiary(req.body);
+    res.json(addedEntry);
+  }
+);
 
 router.use(errorMiddleware);
 
