@@ -17,14 +17,21 @@ interface NewDiary {
   comment?: string;
 }
 
+interface ErrMessage {
+  errMessage: string;
+}
+
+interface ErrMessageSetter {
+  setErrMessage: React.Dispatch<React.SetStateAction<string>>;
+}
+
 const createDiary = async (object: NewDiary) => {
   return axios.post<NewDiary>(baseUrl, object).then((response) => {
-    // console.log("a diary was added!");
     console.log(response.data);
   });
 };
 
-function AddDiary() {
+const AddDiary: React.FC<ErrMessageSetter> = ({ setErrMessage }) => {
   const [dateValue, setDateValue] = useState<string>("");
   const [weatherValue, setWeatherValue] = useState<string>("");
   const [visibilityValue, setVisibilityValue] = useState<string>("");
@@ -32,8 +39,6 @@ function AddDiary() {
 
   const SubmitTheDiary = async (event: React.SyntheticEvent) => {
     event.preventDefault();
-    // console.log("button was clicked");
-
     const diaryObject = {
       date: dateValue,
       weather: weatherValue,
@@ -50,12 +55,20 @@ function AddDiary() {
       setVisibilityValue("");
       setCommentValue("");
       window.location.reload();
-    } catch (error: unknown) {
-      // this will be changed later
-      console.log(error);
+    } catch (error) {
+      // I don't like this but it works
+      if (axios.isAxiosError(error)) {
+        console.log(error.response?.data.error[0].message);
+        setErrMessage(error.response?.data.error[0].message);
+
+        setTimeout(() => {
+          setErrMessage("");
+        }, 5000);
+      } else {
+        console.log(error);
+      }
     }
   };
-
   return (
     <div>
       <form onSubmit={SubmitTheDiary}>
@@ -97,9 +110,17 @@ function AddDiary() {
       </form>
     </div>
   );
-}
+};
 
-function App() {
+const StatusMessage: React.FC<ErrMessage> = ({ errMessage }) => {
+  const statusStyle = {
+    color: "red",
+  };
+  return <div style={{ ...statusStyle }}>{errMessage}</div>;
+};
+
+const App: React.FC = () => {
+  const [errMessage, setErrMessage] = useState<string>("");
   const [diaries, setDiaries] = useState<Diary[]>([
     {
       id: 1,
@@ -122,7 +143,8 @@ function App() {
 
   return (
     <div>
-      <AddDiary />
+      <AddDiary setErrMessage={setErrMessage} />
+      <StatusMessage errMessage={errMessage} />
       {diaries.map((element: Diary) => {
         if (element.comment) {
           return (
@@ -145,6 +167,6 @@ function App() {
       })}
     </div>
   );
-}
+};
 
 export default App;
