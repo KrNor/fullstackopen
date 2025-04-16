@@ -13,7 +13,10 @@ export enum Gender {
 
 export type DiagnosesNoLatin = Omit<Diagnosies, "latin">;
 
-export type NewPatientEntry = Omit<Patient, "id">;
+export type NewPatientEntry = Omit<Patient, "id" | "entries">;
+
+// eslint-disable-next-line @typescript-eslint/no-empty-object-type
+export interface Entry {}
 
 export interface Patient {
   id: string;
@@ -22,9 +25,10 @@ export interface Patient {
   ssn?: string;
   gender: Gender;
   occupation: string;
+  entries: Entry[];
 }
 
-export type PatientNoSsn = Omit<Patient, "ssn">;
+export type PatientNoSsn = Omit<Patient, "ssn" | "entries">;
 
 export type NewZodPatient = z.infer<typeof NewPatientSchema>;
 

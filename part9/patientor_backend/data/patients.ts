@@ -45,7 +45,11 @@ const data = [
 
 const patientEntries: Patient[] = data.map((initialPatient) => {
   const parsedGender = initialPatient.gender as Gender;
-  const patientToReturn = { ...initialPatient, gender: parsedGender };
+  const patientToReturn = {
+    ...initialPatient,
+    gender: parsedGender,
+    entries: [],
+  };
   return patientToReturn;
 });
 
