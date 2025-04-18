@@ -46,6 +46,36 @@ const patients: Patient[] = [
           endDate: "2019-08-28",
         },
       },
+      {
+        id: "37be178f-a432-4ba4-aac2-f86810e36a15",
+        date: "2018-10-05",
+        specialist: "MD House",
+        type: "HealthCheck",
+        description:
+          "Yearly control visit. Due to high cholesterol levels recommended to eat more vegetables.",
+        healthCheckRating: 1,
+      },
+      {
+        id: "54a8746e-34c4-4cf4-bf72-bfecd039be9a",
+        date: "2019-05-01",
+        specialist: "Dr Byte House",
+        type: "HealthCheck",
+        description: "Digital overdose, very bytestatic. Otherwise healthy.",
+        healthCheckRating: 0,
+      },
+      {
+        id: "d811e46d-70b3-4d90-b090-4535c7cf8fb1",
+        date: "2015-01-02",
+        type: "Hospital",
+        specialist: "MD House",
+        diagnosisCodes: ["S62.5"],
+        description:
+          "Healing time appr. 2 weeks. patient doesn't remember how he got the injury.",
+        discharge: {
+          date: "2015-01-16",
+          criteria: "Thumb has healed.",
+        },
+      },
     ],
   },
   {
