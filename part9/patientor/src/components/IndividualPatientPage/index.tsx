@@ -1,8 +1,8 @@
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import patientService from "../../services/patients";
-import { Patient, Gender } from "../../types";
-import { Typography, Alert } from "@mui/material";
+import { Patient, Gender, Entry } from "../../types";
+import { Typography, Alert, List, ListItem } from "@mui/material";
 import MaleIcon from "@mui/icons-material/Male";
 import FemaleIcon from "@mui/icons-material/Female";
 import TransgenderIcon from "@mui/icons-material/Transgender";
@@ -11,6 +11,10 @@ import axios from "axios";
 
 interface Genders {
   gender: Gender;
+}
+
+interface Props {
+  entryList: Entry[];
 }
 
 const DisplayGender = ({ gender }: Genders) => {
@@ -26,6 +30,33 @@ const DisplayGender = ({ gender }: Genders) => {
   }
 };
 
+const DisplayEntries = ({ entryList }: Props) => {
+  // console.log(entryList);
+  //  date, description and diagnoseCodes
+  return (
+    <div>
+      {entryList.map((entry: Entry) => {
+        return (
+          <div key={entry.id}>
+            <Typography component="p">
+              {entry.date}: {entry.description}
+            </Typography>
+            <List sx={{ listStyleType: "disc" }}>
+              {entry.diagnosisCodes?.map((code) => {
+                return (
+                  <ListItem key={entry.id + code} sx={{ display: "list-item" }}>
+                    {code}
+                  </ListItem>
+                );
+              })}
+            </List>
+          </div>
+        );
+      })}
+    </div>
+  );
+};
+
 const IndividualPatientPage = () => {
   const [patient, setPatient] = useState<Patient>({
     id: "",
@@ -34,6 +65,7 @@ const IndividualPatientPage = () => {
     gender: "" as Gender,
     ssn: "",
     dateOfBirth: "",
+    entries: [],
   });
   const [error, setError] = useState<string>();
 
@@ -71,6 +103,12 @@ const IndividualPatientPage = () => {
 
       <Typography component="p">ssn: {patient.ssn}</Typography>
       <Typography component="p">occupation: {patient.occupation}</Typography>
+      <Typography variant="h5">Entries: </Typography>
+      {patient.entries.length > 0 ? (
+        <DisplayEntries entryList={patient.entries} />
+      ) : (
+        <Typography component="p">none</Typography>
+      )}
     </div>
   );
 };
