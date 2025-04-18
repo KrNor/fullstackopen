@@ -1,7 +1,8 @@
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import patientService from "../../services/patients";
-import { Patient, Gender, Entry } from "../../types";
+import diagnosyService from "../../services/diagnoses";
+import { Patient, Gender, Entry, Diagnosis } from "../../types";
 import { Typography, Alert, List, ListItem } from "@mui/material";
 import MaleIcon from "@mui/icons-material/Male";
 import FemaleIcon from "@mui/icons-material/Female";
@@ -14,8 +15,18 @@ interface Genders {
 }
 
 interface Props {
+  diagnosies: Diagnosis[];
   entryList: Entry[];
 }
+
+interface DiagnosieCode {
+  code: string;
+  diagnosies: Diagnosis[];
+}
+
+// interface Diagnosies {
+//   code: string;
+// }
 
 const DisplayGender = ({ gender }: Genders) => {
   switch (gender) {
@@ -30,9 +41,26 @@ const DisplayGender = ({ gender }: Genders) => {
   }
 };
 
-const DisplayEntries = ({ entryList }: Props) => {
-  // console.log(entryList);
-  //  date, description and diagnoseCodes
+const DisplayDiagnosis = ({ diagnosies, code }: DiagnosieCode) => {
+  const getdiagnosyFromCode = (inputCode: string) => {
+    const foundDiagnosy = diagnosies.find((diagnosyy) =>
+      diagnosyy.code === inputCode ? true : false
+    );
+    if (foundDiagnosy) {
+      return (
+        <div>
+          {foundDiagnosy.code}: {foundDiagnosy.name}
+        </div>
+      );
+    } else {
+      return <div>{code}: unknown diagnosy</div>;
+    }
+  };
+
+  return <div>{getdiagnosyFromCode(code)}</div>;
+};
+
+const DisplayEntries = ({ diagnosies, entryList }: Props) => {
   return (
     <div>
       {entryList.map((entry: Entry) => {
@@ -45,7 +73,7 @@ const DisplayEntries = ({ entryList }: Props) => {
               {entry.diagnosisCodes?.map((code) => {
                 return (
                   <ListItem key={entry.id + code} sx={{ display: "list-item" }}>
-                    {code}
+                    <DisplayDiagnosis diagnosies={diagnosies} code={code} />
                   </ListItem>
                 );
               })}
@@ -67,6 +95,8 @@ const IndividualPatientPage = () => {
     dateOfBirth: "",
     entries: [],
   });
+  const [diagnosies, setDiagnosies] = useState<Diagnosis[]>();
+
   const [error, setError] = useState<string>();
 
   const { id } = useParams();
@@ -91,7 +121,25 @@ const IndividualPatientPage = () => {
         }
       }
     }
+    async function getDiagnosies(): Promise<void> {
+      try {
+        const diagnosyList = await diagnosyService.getAll();
+        setDiagnosies(diagnosyList);
+      } catch (error: unknown) {
+        if (axios.isAxiosError(error)) {
+          if (
+            error.response?.data &&
+            typeof error.response.data.error === "string"
+          ) {
+            setError(error.response.data.error);
+          } else {
+            setError("Unknown problem when trying to get diagnosy list");
+          }
+        }
+      }
+    }
     getPerson();
+    getDiagnosies();
   }, [id]);
 
   return (
@@ -104,8 +152,8 @@ const IndividualPatientPage = () => {
       <Typography component="p">ssn: {patient.ssn}</Typography>
       <Typography component="p">occupation: {patient.occupation}</Typography>
       <Typography variant="h5">Entries: </Typography>
-      {patient.entries.length > 0 ? (
-        <DisplayEntries entryList={patient.entries} />
+      {patient.entries.length > 0 && diagnosies ? (
+        <DisplayEntries diagnosies={diagnosies} entryList={patient.entries} />
       ) : (
         <Typography component="p">none</Typography>
       )}
