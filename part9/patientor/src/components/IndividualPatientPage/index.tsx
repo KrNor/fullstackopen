@@ -2,8 +2,11 @@ import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import patientService from "../../services/patients";
 import diagnosyService from "../../services/diagnoses";
-import { Patient, Gender, Entry, Diagnosis } from "../../types";
-import { Typography, Alert, List, ListItem } from "@mui/material";
+import { DisplayEntries } from "./EntryDisplay";
+
+import { Patient, Gender, Diagnosis } from "../../types";
+import { Typography, Alert } from "@mui/material";
+
 import MaleIcon from "@mui/icons-material/Male";
 import FemaleIcon from "@mui/icons-material/Female";
 import TransgenderIcon from "@mui/icons-material/Transgender";
@@ -13,20 +16,6 @@ import axios from "axios";
 interface Genders {
   gender: Gender;
 }
-
-interface Props {
-  diagnosies: Diagnosis[];
-  entryList: Entry[];
-}
-
-interface DiagnosieCode {
-  code: string;
-  diagnosies: Diagnosis[];
-}
-
-// interface Diagnosies {
-//   code: string;
-// }
 
 const DisplayGender = ({ gender }: Genders) => {
   switch (gender) {
@@ -39,50 +28,6 @@ const DisplayGender = ({ gender }: Genders) => {
     default:
       return <QuestionMarkIcon />;
   }
-};
-
-const DisplayDiagnosis = ({ diagnosies, code }: DiagnosieCode) => {
-  const getdiagnosyFromCode = (inputCode: string) => {
-    const foundDiagnosy = diagnosies.find((diagnosyy) =>
-      diagnosyy.code === inputCode ? true : false
-    );
-    if (foundDiagnosy) {
-      return (
-        <div>
-          {foundDiagnosy.code}: {foundDiagnosy.name}
-        </div>
-      );
-    } else {
-      return <div>{code}: unknown diagnosy</div>;
-    }
-  };
-
-  return <div>{getdiagnosyFromCode(code)}</div>;
-};
-
-const DisplayEntries = ({ diagnosies, entryList }: Props) => {
-  return (
-    <div>
-      {entryList.map((entry: Entry) => {
-        return (
-          <div key={entry.id}>
-            <Typography component="p">
-              {entry.date}: {entry.description}
-            </Typography>
-            <List sx={{ listStyleType: "disc" }}>
-              {entry.diagnosisCodes?.map((code) => {
-                return (
-                  <ListItem key={entry.id + code} sx={{ display: "list-item" }}>
-                    <DisplayDiagnosis diagnosies={diagnosies} code={code} />
-                  </ListItem>
-                );
-              })}
-            </List>
-          </div>
-        );
-      })}
-    </div>
-  );
 };
 
 const IndividualPatientPage = () => {
