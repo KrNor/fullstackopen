@@ -15,6 +15,12 @@ export const newPatientParser = (
   }
 };
 
+// export const newPatientEntryParser = (
+//   req: Request,
+//   _res: Response,
+//   next: NextFunction
+// ) => {};
+
 export const errorMiddleware = (
   error: unknown,
   _req: Request,

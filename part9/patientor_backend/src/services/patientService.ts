@@ -2,6 +2,7 @@
 import patients from "../../data/patientsNew";
 import { PatientNoSsn, NewPatientEntry, Patient } from "../types";
 import { v1 as uuid } from "uuid";
+import { toSanitizePatientEntry } from "../utils";
 
 const getPatientNoSsn = (): PatientNoSsn[] => {
   const patientsToReturn = patients.map(
@@ -37,8 +38,21 @@ const addPatient = (object: NewPatientEntry): Patient => {
   return newPatient;
 };
 
+const addEntry = (patientId: string, object: unknown): Patient => {
+  const patientt = getPatientWithId(patientId);
+
+  if (patientt) {
+    const sanitisedPatient = toSanitizePatientEntry(object);
+    patientt.entries.push(sanitisedPatient);
+    return patientt;
+  } else {
+    throw new Error("patient not found");
+  }
+};
+
 export default {
   getPatientNoSsn,
   addPatient,
   getPatientWithId,
+  addEntry,
 };

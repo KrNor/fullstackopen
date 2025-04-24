@@ -26,6 +26,19 @@ router.get("/:id", (req, res) => {
   }
 });
 
+router.post("/:id/entries", (req, res) => {
+  if (req.params.id) {
+    const patientWithNewEntry = patientServices.addEntry(
+      req.params.id,
+      req.body
+    );
+
+    res.json(patientWithNewEntry);
+  } else {
+    res.json({ error: "id missing" });
+  }
+});
+
 router.post(
   "/",
   newPatientParser,
