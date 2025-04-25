@@ -3,8 +3,9 @@ import patientServices from "../services/patientService";
 import {
   newPatientParser,
   errorMiddleware,
+  newPatientEntryParser,
 } from "../middleware/patientMiddleware";
-import { NewZodPatient, NewZodPatientWithId } from "../types";
+import { Entry, NewZodPatient, NewZodPatientWithId, Patient } from "../types";
 
 const router = express.Router();
 
@@ -26,18 +27,21 @@ router.get("/:id", (req, res) => {
   }
 });
 
-router.post("/:id/entries", (req, res) => {
-  if (req.params.id) {
-    const patientWithNewEntry = patientServices.addEntry(
-      req.params.id,
-      req.body
-    );
+// router.post("/:id/entries", newPatientEntryParser, (req, res) => {
 
-    res.json(patientWithNewEntry);
-  } else {
-    res.json({ error: "id missing" });
+router.post(
+  "/:id/entries",
+  newPatientEntryParser,
+  (req: Request<object, unknown, Entry>, res: Response<Patient>) => {
+    if ("id" in req.params && typeof req.params.id === "string") {
+      const patientWithNewEntry = patientServices.addEntry(
+        req.params.id,
+        req.body
+      );
+      res.json(patientWithNewEntry);
+    }
   }
-});
+);
 
 router.post(
   "/",
