@@ -27,7 +27,8 @@ export const newPatientEntryParser = (
       typeof req.params.id === "string" &&
       uuidValidate(req.params.id)
     ) {
-      toSanitizePatientEntry(req.body);
+      const returnedPatient = toSanitizePatientEntry(req.body);
+      req.body = returnedPatient;
       next();
     } else {
       res.status(400).send({ error: "invalid patient id" });

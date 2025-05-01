@@ -1,7 +1,6 @@
 import {
   Gender,
   NewPatientEntry,
-  Diagnosis,
   BaseEntry,
   HealthCheckEntry,
   HospitalEntry,
@@ -21,16 +20,6 @@ export const NewPatientSchema = z.object({
 
 export const toSanitizePatient = (object: unknown): NewPatientEntry => {
   return NewPatientSchema.parse(object);
-};
-
-// from my understanding this is needed/allowed to be used
-const parseDiagnosisCodes = (object: unknown): Array<Diagnosis["code"]> => {
-  if (!object || typeof object !== "object" || !("diagnosisCodes" in object)) {
-    // we will just trust the data to be in correct form
-    return [] as Array<Diagnosis["code"]>;
-  }
-
-  return object.diagnosisCodes as Array<Diagnosis["code"]>;
 };
 
 export const toSanitizePatientEntry = (object: unknown): Entry => {
@@ -82,11 +71,16 @@ const sanitizeBaseEntry = (object: unknown): BaseEntry => {
     diagnosisCodes: [],
   };
 
+  // I decided it's worth saving the diagnosy codes, even if they are not in the data currently in case it is outdated.
   if ("diagnosisCodes" in object) {
     if (Array.isArray(object.diagnosisCodes)) {
-      baseEntry.diagnosisCodes = parseDiagnosisCodes(object.diagnosisCodes);
+      const uniqueDiagnosies = [...new Set(object.diagnosisCodes)].filter(
+        (diagnosis: string) => diagnosis.length > 0
+      );
+
+      baseEntry.diagnosisCodes = uniqueDiagnosies;
     } else {
-      throw new Error("Diagnosis codes must be an array");
+      throw new Error("Valid diagnosis codes must be an array");
     }
   }
 
@@ -100,8 +94,9 @@ function sanitizeHealthCheckEntry(object: unknown): HealthCheckEntry {
     if (
       !object.healthCheckRating &&
       !Number.isInteger(object.healthCheckRating)
-    )
-      throw new Error("Missing health check rating");
+    ) {
+      throw new Error("Health Check Rating must be a number between 0 and 3");
+    }
 
     return {
       ...sanitizedBaseEntry,
