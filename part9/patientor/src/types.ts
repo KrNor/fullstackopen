@@ -42,6 +42,8 @@ export interface HealthCheckEntry extends BaseEntry {
   healthCheckRating: HealthCheckRating;
 }
 
+export type HospitalEntryValues = Omit<HealthCheckEntry, "id">;
+
 interface Discharge {
   date: string;
   criteria: string;
