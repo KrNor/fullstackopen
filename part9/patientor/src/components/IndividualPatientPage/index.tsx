@@ -104,6 +104,7 @@ const IndividualPatientPage = () => {
           setPatient={setPatient}
           patientId={id}
           setError={setError}
+          diagnosies={diagnosies as Diagnosis[]}
         />
       ) : (
         <Button
